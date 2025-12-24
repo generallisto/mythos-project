@@ -18,46 +18,19 @@
         }
 
         :root {
-            /* Цветовая палитра - усиленные контрасты */
-            --color-bg: #050811;
-            --color-dark: #111428;
-            --color-gold-1: #FF9D00;
-            --color-gold-2: #FFD700;
-            --color-gold-3: #FFF0B3;
-            --color-white: #FFFFFF;
-            --color-text: #E0E0E0;
-            --color-accent: #FFCC00;
-            
-            /* Эффекты свечения */
-            --glow-soft: 0 0 40px rgba(255, 157, 0, 0.3);
-            --glow-medium: 0 0 60px rgba(255, 215, 0, 0.4);
-            --glow-strong: 0 0 80px rgba(255, 240, 179, 0.5);
-            --glow-text: 0 0 30px rgba(255, 215, 0, 0.6);
-            --glow-card: 0 20px 60px rgba(255, 157, 0, 0.3);
-            --glow-intense: 0 0 100px rgba(255, 215, 0, 0.2);
-            
-            /* Типографика */
+            --color-bg: #0A0E17;
+            --color-dark: #1A1D2B;
+            --color-gold-1: #FFB347;
+            --color-gold-2: #FFCC33;
+            --color-white: #F0F0F0;
+            --color-text: #CCCCCC;
+            --color-accent: #FFCC33;
             --font-heading: 'Cinzel', serif;
             --font-body: 'Inter', sans-serif;
             --font-quote: 'Cormorant Garamond', serif;
-            
-            /* Переходы */
-            --transition-smooth: all 0.7s cubic-bezier(0.4, 0, 0.2, 1);
-            --transition-bounce: all 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            --transition-fast: all 0.3s ease;
-            
-            /* Закругления */
-            --radius-small: 15px;
-            --radius-medium: 25px;
-            --radius-large: 40px;
-            --radius-circle: 50%;
-            --radius-pill: 100px;
-            
-            /* Размеры изображений */
-            --image-height: 300px;
-            --image-height-mobile: 250px;
-            --creature-height: 350px;
-            --creature-height-mobile: 300px;
+            --transition: all 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+            --shadow-glow: 0 0 30px rgba(255, 195, 0, 0.4);
+            --shadow-strong: 0 20px 50px rgba(255, 195, 0, 0.3);
         }
 
         html {
@@ -72,6 +45,7 @@
             overflow-x: hidden;
             position: relative;
             min-height: 100vh;
+            font-weight: 400;
         }
 
         .container {
@@ -90,17 +64,18 @@
             font-family: var(--font-heading);
             font-weight: 900;
             line-height: 1.2;
-            margin-bottom: 1rem;
+            margin-bottom: 1.5rem;
         }
 
         p {
             margin-bottom: 1.5rem;
+            font-weight: 400;
         }
 
         a {
             text-decoration: none;
             color: inherit;
-            transition: var(--transition-fast);
+            transition: var(--transition);
         }
 
         .btn {
@@ -108,23 +83,23 @@
             padding: 16px 32px;
             background: linear-gradient(135deg, var(--color-gold-1), var(--color-gold-2));
             color: var(--color-bg);
-            border-radius: var(--radius-pill);
+            border-radius: 50px;
             font-weight: 800;
             text-transform: uppercase;
             letter-spacing: 2px;
             border: none;
             cursor: pointer;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
             z-index: 1;
             font-size: 1rem;
-            box-shadow: var(--glow-card);
+            box-shadow: 0 10px 30px rgba(255, 179, 71, 0.3);
         }
 
         .btn:hover {
             transform: translateY(-5px) scale(1.05);
-            box-shadow: var(--glow-strong);
+            box-shadow: var(--shadow-strong);
         }
 
         .btn::before {
@@ -156,7 +131,7 @@
             -webkit-text-fill-color: transparent;
             display: inline-block;
             position: relative;
-            text-shadow: var(--glow-text);
+            text-shadow: 0 0 30px rgba(255, 204, 51, 0.3);
             font-weight: 900;
         }
 
@@ -177,70 +152,13 @@
             background: linear-gradient(135deg, var(--color-gold-1), var(--color-gold-2));
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
-            text-shadow: var(--glow-text);
+            text-shadow: 0 0 20px rgba(255, 204, 51, 0.3);
         }
 
         .bold-white {
             font-weight: 900;
             color: var(--color-white);
             text-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
-        }
-
-        /* ===== ИСПРАВЛЕННЫЕ СТИЛИ ДЛЯ ИЗОБРАЖЕНИЙ ===== */
-        .image-container {
-            position: relative;
-            width: 100%;
-            height: var(--image-height);
-            overflow: hidden;
-            border-radius: var(--radius-large) var(--radius-large) 0 0;
-        }
-        
-        .creature-image-container {
-            height: var(--creature-height);
-        }
-        
-        .god-image, .creature-image {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-            transition: var(--transition-smooth);
-            transform: scale(1.1);
-        }
-        
-        /* Общие стили для всех изображений */
-        .god-image {
-            filter: grayscale(20%) brightness(0.8) contrast(1.2);
-        }
-        
-        .creature-image {
-            filter: brightness(0.7) contrast(1.1) saturate(1.2);
-        }
-        
-        .god-card:hover .god-image {
-            filter: grayscale(0%) brightness(1.1) contrast(1.3);
-            transform: scale(1.05);
-        }
-        
-        .creature-card:hover .creature-image {
-            filter: brightness(1) contrast(1.3) saturate(1.5);
-            transform: scale(1.08);
-        }
-        
-        /* Заглушка для изображений */
-        .image-placeholder {
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #111428, #1A1D2B);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--color-gold-2);
-            font-size: 3rem;
-            border-radius: var(--radius-large) var(--radius-large) 0 0;
-        }
-        
-        .image-placeholder i {
-            filter: drop-shadow(0 0 10px rgba(255, 215, 0, 0.3));
         }
 
         /* ===== ATMOSPHERIC BACKGROUND ELEMENTS ===== */
@@ -285,7 +203,7 @@
             width: 100%;
             padding: 25px 0;
             z-index: 1000;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             background: rgba(10, 14, 23, 0.95);
             backdrop-filter: blur(15px);
             border-bottom: 1px solid rgba(255, 195, 0, 0.2);
@@ -338,7 +256,7 @@
             width: 0;
             height: 3px;
             background: linear-gradient(to right, var(--color-gold-1), var(--color-gold-2));
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             border-radius: 2px;
         }
 
@@ -359,8 +277,8 @@
             cursor: pointer;
             width: 50px;
             height: 50px;
-            border-radius: var(--radius-circle);
-            transition: var(--transition-smooth);
+            border-radius: 50%;
+            transition: var(--transition);
         }
 
         .mobile-menu-btn:hover {
@@ -452,7 +370,7 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            border-radius: var(--radius-circle);
+            border-radius: 50%;
             background: rgba(255, 195, 0, 0.15);
             border: 2px solid rgba(255, 195, 0, 0.3);
             backdrop-filter: blur(10px);
@@ -494,6 +412,17 @@
             overflow: hidden;
         }
 
+        .pantheon::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 10% 20%, rgba(255, 179, 71, 0.08) 0%, transparent 40%);
+            z-index: -1;
+        }
+
         .gods-grid {
             display: grid;
             grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
@@ -503,18 +432,15 @@
 
         .god-card {
             background: linear-gradient(145deg, rgba(40, 44, 60, 0.9), rgba(26, 29, 43, 0.95));
-            border-radius: var(--radius-large);
+            border-radius: 25px;
             overflow: hidden;
             position: relative;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             border: 1px solid rgba(255, 195, 0, 0.2);
             opacity: 0;
             transform: translateY(50px) rotateY(5deg);
             transform-style: preserve-3d;
             backdrop-filter: blur(10px);
-            height: 100%;
-            display: flex;
-            flex-direction: column;
         }
 
         .god-card.visible {
@@ -524,8 +450,27 @@
 
         .god-card:hover {
             transform: translateY(-15px) scale(1.05) rotateY(0);
-            box-shadow: var(--glow-strong);
+            box-shadow: var(--shadow-strong);
             border-color: rgba(255, 195, 0, 0.4);
+        }
+
+        .god-card::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, var(--color-gold-1), var(--color-gold-2), var(--color-gold-1));
+            border-radius: 27px;
+            z-index: -1;
+            opacity: 0;
+            transition: var(--transition);
+            filter: blur(10px);
+        }
+
+        .god-card:hover::before {
+            opacity: 0.6;
         }
 
         .god-icon {
@@ -534,8 +479,8 @@
             right: 25px;
             font-size: 3rem;
             color: rgba(255, 195, 0, 0.3);
-            z-index: 2;
-            transition: var(--transition-smooth);
+            z-index: 0;
+            transition: var(--transition);
             filter: drop-shadow(0 0 10px rgba(255, 195, 0, 0.3));
         }
 
@@ -545,13 +490,24 @@
             filter: drop-shadow(0 0 20px rgba(255, 195, 0, 0.5));
         }
 
+        .god-image {
+            width: 100%;
+            height: 250px;
+            object-fit: cover;
+            filter: grayscale(20%) brightness(0.8) contrast(1.2);
+            transition: var(--transition);
+            transform: scale(1.1);
+        }
+
+        .god-card:hover .god-image {
+            filter: grayscale(0%) brightness(1.1) contrast(1.3);
+            transform: scale(1.05);
+        }
+
         .god-content {
             padding: 30px;
             position: relative;
             z-index: 1;
-            flex: 1;
-            display: flex;
-            flex-direction: column;
         }
 
         .god-content h3 {
@@ -569,14 +525,13 @@
             padding: 8px 20px;
             background: rgba(255, 195, 0, 0.15);
             color: var(--color-gold-2);
-            border-radius: var(--radius-pill);
+            border-radius: 25px;
             font-size: 1rem;
             font-weight: 800;
             margin-bottom: 20px;
             border: 1px solid rgba(255, 195, 0, 0.3);
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             backdrop-filter: blur(5px);
-            align-self: flex-start;
         }
 
         .god-card:hover .god-domain {
@@ -591,7 +546,6 @@
             color: #ddd;
             line-height: 1.7;
             font-weight: 400;
-            flex: 1;
         }
 
         .god-symbols {
@@ -599,16 +553,15 @@
             gap: 12px;
             font-size: 0.95rem;
             flex-wrap: wrap;
-            margin-top: auto;
         }
 
         .god-symbols span {
             padding: 6px 15px;
             background: rgba(255, 195, 0, 0.1);
-            border-radius: var(--radius-pill);
+            border-radius: 20px;
             color: var(--color-gold-2);
             border: 1px solid rgba(255, 195, 0, 0.2);
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             font-weight: 600;
             backdrop-filter: blur(5px);
         }
@@ -625,6 +578,17 @@
             overflow: hidden;
         }
 
+        .myths::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 70% 30%, rgba(255, 179, 71, 0.05) 0%, transparent 50%);
+            z-index: -1;
+        }
+
         .myths-accordion {
             max-width: 1000px;
             margin: 0 auto;
@@ -632,11 +596,11 @@
 
         .myth-item {
             background: rgba(26, 29, 43, 0.8);
-            border-radius: var(--radius-large);
+            border-radius: 25px;
             margin-bottom: 25px;
             overflow: hidden;
             border-left: 5px solid transparent;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             position: relative;
             backdrop-filter: blur(10px);
             border: 1px solid rgba(255, 195, 0, 0.1);
@@ -655,9 +619,24 @@
             display: flex;
             justify-content: space-between;
             align-items: center;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             position: relative;
             overflow: hidden;
+        }
+
+        .myth-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 195, 0, 0.15), transparent);
+            transition: 0.8s;
+        }
+
+        .myth-header:hover::before {
+            left: 100%;
         }
 
         .myth-header:hover {
@@ -676,7 +655,7 @@
         .myth-icon {
             font-size: 1.8rem;
             color: var(--color-gold-2);
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             position: relative;
             z-index: 1;
             filter: drop-shadow(0 0 10px rgba(255, 195, 0, 0.3));
@@ -741,8 +720,8 @@
             color: var(--color-gold-2);
             padding: 10px 20px;
             background: rgba(255, 195, 0, 0.15);
-            border-radius: var(--radius-medium);
-            transition: var(--transition-smooth);
+            border-radius: 20px;
+            transition: var(--transition);
             font-weight: 700;
             backdrop-filter: blur(5px);
         }
@@ -760,21 +739,32 @@
             overflow: hidden;
         }
 
+        .gallery::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 30% 70%, rgba(255, 179, 71, 0.08) 0%, transparent 60%);
+            z-index: -1;
+        }
+
         .creatures-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 35px;
             perspective: 1000px;
         }
 
         .creature-card {
             position: relative;
-            border-radius: var(--radius-large);
+            border-radius: 25px;
             overflow: hidden;
-            height: var(--creature-height);
+            height: 350px;
             opacity: 0;
             transform: translateY(50px) scale(0.95);
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             cursor: pointer;
             border: 1px solid rgba(255, 195, 0, 0.15);
             backdrop-filter: blur(5px);
@@ -787,8 +777,22 @@
 
         .creature-card:hover {
             transform: translateY(-15px) scale(1.03);
-            box-shadow: var(--glow-strong);
+            box-shadow: var(--shadow-strong);
             border-color: rgba(255, 195, 0, 0.3);
+        }
+
+        .creature-image {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            filter: brightness(0.7) contrast(1.1) saturate(1.2);
+            transition: var(--transition);
+            transform: scale(1.1);
+        }
+
+        .creature-card:hover .creature-image {
+            filter: brightness(1) contrast(1.3) saturate(1.5);
+            transform: scale(1.08);
         }
 
         .creature-overlay {
@@ -804,7 +808,7 @@
             color: white;
             transform: translateY(100%);
             opacity: 0;
-            transition: var(--transition-smooth);
+            transition: var(--transition);
             backdrop-filter: blur(10px);
         }
 
@@ -851,6 +855,16 @@
             border-top: 1px solid rgba(255, 195, 0, 0.2);
             position: relative;
             overflow: hidden;
+        }
+
+        footer::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: linear-gradient(to right, var(--color-gold-1), var(--color-gold-2));
         }
 
         .footer-content {
@@ -924,11 +938,6 @@
             .section-title h2 {
                 font-size: 3rem;
             }
-            
-            :root {
-                --image-height: 280px;
-                --creature-height: 320px;
-            }
         }
 
         @media (max-width: 992px) {
@@ -952,11 +961,6 @@
                 grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
                 gap: 30px;
             }
-            
-            :root {
-                --image-height: 250px;
-                --creature-height: 300px;
-            }
         }
 
         @media (max-width: 768px) {
@@ -977,7 +981,7 @@
                 gap: 25px;
                 transform: translateY(-100%);
                 opacity: 0;
-                transition: var(--transition-smooth);
+                transition: var(--transition);
                 z-index: 999;
                 border-bottom: 1px solid rgba(255, 195, 0, 0.2);
                 box-shadow: 0 15px 40px rgba(0, 0, 0, 0.6);
@@ -1046,11 +1050,6 @@
                 font-size: 1.2rem;
                 padding: 20px;
             }
-            
-            :root {
-                --image-height: 220px;
-                --creature-height: 280px;
-            }
         }
 
         @media (max-width: 576px) {
@@ -1079,19 +1078,10 @@
                 grid-template-columns: 1fr;
                 max-width: 400px;
                 margin: 0 auto;
-                gap: 25px;
             }
             
             .creature-card {
-                height: var(--creature-height-mobile);
-            }
-            
-            .image-container {
-                height: var(--image-height-mobile);
-            }
-            
-            .creature-image-container {
-                height: var(--creature-height-mobile);
+                height: 300px;
             }
             
             .btn {
@@ -1111,11 +1101,6 @@
             .footer-quote {
                 font-size: 1.1rem;
             }
-            
-            :root {
-                --image-height-mobile: 200px;
-                --creature-height-mobile: 250px;
-            }
         }
 
         /* ===== SCROLL TRANSITIONS ===== */
@@ -1128,31 +1113,6 @@
         .section-transition.visible {
             opacity: 1;
             transform: translateY(0);
-        }
-        
-        /* ===== LOADING STATES ===== */
-        .loading {
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .loading::after {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(90deg, 
-                transparent, 
-                rgba(255, 215, 0, 0.1), 
-                transparent);
-            animation: loading 1.5s infinite;
-        }
-        
-        @keyframes loading {
-            0% { transform: translateX(-100%); }
-            100% { transform: translateX(100%); }
         }
     </style>
 </head>
@@ -1204,10 +1164,7 @@
                     <div class="god-icon">
                         <i class="fas fa-bolt"></i>
                     </div>
-                    <div class="image-container">
-                        <img src="images/zeus.jpg" alt="Зевс" class="god-image" 
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-bolt\"></i></div>';">
-                    </div>
+                    <img src="images/zeus.jpg" alt="Зевс" class="god-image">
                     <div class="god-content">
                         <h3><span class="bold-gold">ЗЕВС</span></h3>
                         <span class="god-domain">БОГ НЕБА И ГРОМА</span>
@@ -1225,10 +1182,7 @@
                     <div class="god-icon">
                         <i class="fas fa-crown"></i>
                     </div>
-                    <div class="image-container">
-                        <img src="images/hera.jpg" alt="Гера" class="god-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-crown\"></i></div>';">
-                    </div>
+                    <img src="images/hera.jpg" alt="Гера" class="god-image">
                     <div class="god-content">
                         <h3><span class="bold-gold">ГЕРА</span></h3>
                         <span class="god-domain">БОГИНЯ БРАКА</span>
@@ -1246,10 +1200,7 @@
                     <div class="god-icon">
                         <i class="fas fa-water"></i>
                     </div>
-                    <div class="image-container">
-                        <img src="images/poseidon.jpg" alt="Посейдон" class="god-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-water\"></i></div>';">
-                    </div>
+                    <img src="images/poseidon.jpg" alt="Посейдон" class="god-image">
                     <div class="god-content">
                         <h3><span class="bold-gold">ПОСЕЙДОН</span></h3>
                         <span class="god-domain">БОГ МОРЕЙ</span>
@@ -1267,10 +1218,7 @@
                     <div class="god-icon">
                         <i class="fas fa-helmet-battle"></i>
                     </div>
-                    <div class="image-container">
-                        <img src="images/athena.jpg" alt="Афина" class="god-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-helmet-battle\"></i></div>';">
-                    </div>
+                    <img src="images/athena.jpg" alt="Афина" class="god-image">
                     <div class="god-content">
                         <h3><span class="bold-gold">АФИНА</span></h3>
                         <span class="god-domain">БОГИНЯ МУДРОСТИ</span>
@@ -1288,10 +1236,7 @@
                     <div class="god-icon">
                         <i class="fas fa-sun"></i>
                     </div>
-                    <div class="image-container">
-                        <img src="images/apollo.jpg" alt="Аполлон" class="god-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-sun\"></i></div>';">
-                    </div>
+                    <img src="images/apollo.jpg" alt="Аполлон" class="god-image">
                     <div class="god-content">
                         <h3><span class="bold-gold">АПОЛЛОН</span></h3>
                         <span class="god-domain">БОГ СОЛНЦА</span>
@@ -1309,13 +1254,442 @@
                     <div class="god-icon">
                         <i class="fas fa-moon"></i>
                     </div>
-                    <div class="image-container">
-                        <img src="images/artemis.jpg" alt="Артемида" class="god-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-moon\"></i></div>';">
-                    </div>
+                    <img src="images/artemis.jpg" alt="Артемида" class="god-image">
                     <div class="god-content">
                         <h3><span class="bold-gold">АРТЕМИДА</span></h3>
                         <span class="god-domain">БОГИНЯ ОХОТЫ</span>
                         <p class="god-description">Богиня охоты, дикой природы, луны и целомудрия. Покровительница женщин и животных.</p>
                         <div class="god-symbols">
-                            <span>
+                            <span>ЛУК</span>
+                            <span>ЛАНЬ</span>
+                            <span>ЛУНА</span>
+                            <span>КИПАРИС</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Myths Section -->
+    <section class="myths section-transition" id="myths">
+        <div class="container">
+            <div class="section-title">
+                <h2>ВЕЛИКИЕ МИФЫ</h2>
+                <p>Легенды, которые формировали мировоззрение древних греков</p>
+            </div>
+            <div class="myths-accordion">
+                <!-- Myth 1 -->
+                <div class="myth-item active">
+                    <div class="myth-header">
+                        <h3 class="myth-title"><span class="bold-gold">ТИТАНОМАХИЯ</span> - ВОЙНА БОГОВ И ТИТАНОВ</h3>
+                        <i class="fas fa-plus myth-icon"></i>
+                    </div>
+                    <div class="myth-content">
+                        <p class="myth-text">
+                            Десятилетняя война между <span class="bold-gold">богами-олимпийцами</span> и <span class="bold-white">титанами</span>, 
+                            которая определила судьбу космоса. Возглавляемые Зевсом, олимпийцы бросили вызов 
+                            титанам во главе с Кроносом. Битва потрясла основы мира, горы рушились, а моря кипели. 
+                            Победа олимпийцев установила новый миропорядок и вознесла Зевса на трон верховного бога.
+                        </p>
+                        <div class="myth-meta">
+                            <div class="myth-era">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>ДОЧЕЛОВЕЧЕСКАЯ ЭРА</span>
+                            </div>
+                            <div class="myth-location">
+                                <i class="fas fa-mountain"></i>
+                                <span>ОЛИМП vs ТАРТАР</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Myth 2 -->
+                <div class="myth-item">
+                    <div class="myth-header">
+                        <h3 class="myth-title"><span class="bold-gold">ПОДВИГИ ГЕРАКЛА</span> - 12 НЕВЫПОЛНИМЫХ ЗАДАЧ</h3>
+                        <i class="fas fa-plus myth-icon"></i>
+                    </div>
+                    <div class="myth-content">
+                        <p class="myth-text">
+                            В наказание за убийство своей семьи в припадке безумия, насланного Герой, 
+                            <span class="bold-gold">Геракл</span> должен был совершить двенадцать подвигов для царя Эврисфея. 
+                            От укрощения Немейского льва до похищения золотых яблок Гесперид — каждый подвиг 
+                            казался невыполнимым. Эти испытания не только искупили его вину, но и сделали 
+                            его величайшим героем греческой мифологии, удостоенным места среди богов.
+                        </p>
+                        <div class="myth-meta">
+                            <div class="myth-era">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>ГЕРОИЧЕСКИЙ ВЕК</span>
+                            </div>
+                            <div class="myth-location">
+                                <i class="fas fa-globe-europe"></i>
+                                <span>ВСЯ ИЗВЕСТНАЯ ЭЛЛАДА</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Myth 3 -->
+                <div class="myth-item">
+                    <div class="myth-header">
+                        <h3 class="myth-title"><span class="bold-gold">ПУТЕШЕСТВИЕ ОДИССЕЯ</span> - 10 ЛЕТ СКИТАНИЙ</h3>
+                        <i class="fas fa-plus myth-icon"></i>
+                    </div>
+                    <div class="myth-content">
+                        <p class="myth-text">
+                            После падения Трои, <span class="bold-gold">Одиссей</span>, царь Итаки, десять лет пытался вернуться домой, 
+                            навлекая на себя гнев Посейдона. Его путь лежал через земли циклопов, остров сирен, 
+                            между Сциллой и Харибдой. Эти испытания проверяли не только его силу, но и хитрость, 
+                            которая в итоге привела его к верной Пенелопе и родному дому, где он восстановил 
+                            свою власть.
+                        </p>
+                        <div class="myth-meta">
+                            <div class="myth-era">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>ПОСЛЕ ТРОЯНСКОЙ ВОЙНЫ</span>
+                            </div>
+                            <div class="myth-location">
+                                <i class="fas fa-ship"></i>
+                                <span>СРЕДИЗЕМНОЕ МОРЕ</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- Myth 4 -->
+                <div class="myth-item">
+                    <div class="myth-header">
+                        <h3 class="myth-title"><span class="bold-gold">ПОХИЩЕНИЕ ПЕРСЕФОНЫ</span> - РОЖДЕНИЕ ВРЕМЁН ГОДА</h3>
+                        <i class="fas fa-plus myth-icon"></i>
+                    </div>
+                    <div class="myth-content">
+                        <p class="myth-text">
+                            Аид, бог подземного мира, похитил <span class="bold-gold">Персефону</span>, дочь Деметры, богини плодородия. 
+                            В горе Деметра перестала заботиться о земле, наступила вечная зима. Зевс вмешался и 
+                            постановил, что Персефона будет проводить две трети года с матерью (весна и лето), 
+                            а одну треть — с Аидом (осень и зима). Так родились времена года.
+                        </p>
+                        <div class="myth-meta">
+                            <div class="myth-era">
+                                <i class="fas fa-hourglass-half"></i>
+                                <span>ЗОЛОТОЙ ВЕК</span>
+                            </div>
+                            <div class="myth-location">
+                                <i class="fas fa-seedling"></i>
+                                <span>ЭЛЕВСИН</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Gallery Section -->
+    <section class="gallery section-transition" id="gallery">
+        <div class="container">
+            <div class="section-title">
+                <h2>МИФИЧЕСКИЕ СУЩЕСТВА</h2>
+                <p>Чудовища, гибриды и волшебные создания древних легенд</p>
+            </div>
+            <div class="creatures-grid">
+                <!-- Creature 1 -->
+                <div class="creature-card">
+                    <img src="images/minotaur.jpg" alt="Минотавр" class="creature-image">
+                    <div class="creature-overlay">
+                        <h3 class="creature-name">МИНОТАВР</h3>
+                        <p class="creature-type">ЧЕЛОВЕК-БЫК</p>
+                        <div class="creature-info">
+                            Чудовище с телом человека и головой быка, обитавшее в Лабиринте на Крите. Побеждён Тесеем.
+                        </div>
+                    </div>
+                </div>
+                <!-- Creature 2 -->
+                <div class="creature-card">
+                    <img src="images/phoenix.jpg" alt="Феникс" class="creature-image">
+                    <div class="creature-overlay">
+                        <h3 class="creature-name">ФЕНИКС</h3>
+                        <p class="creature-type">БЕССМЕРТНАЯ ПТИЦА</p>
+                        <div class="creature-info">
+                            Волшебная птица, возрождающаяся из собственного пепла. Символ вечного обновления и бессмертия.
+                        </div>
+                    </div>
+                </div>
+                <!-- Creature 3 -->
+                <div class="creature-card">
+                    <img src="images/cerberus.jpg" alt="Цербер" class="creature-image">
+                    <div class="creature-overlay">
+                        <h3 class="creature-name">ЦЕРБЕР</h3>
+                        <p class="creature-type">СТРАЖ АИДА</p>
+                        <div class="creature-info">
+                            Трёхголовый пёс со змеиным хвостом, охраняющий вход в подземное царство Аида.
+                        </div>
+                    </div>
+                </div>
+                <!-- Creature 4 -->
+                <div class="creature-card">
+                    <img src="images/pegasus.jpg" alt="Пегас" class="creature-image">
+                    <div class="creature-overlay">
+                        <h3 class="creature-name">ПЕГАС</h3>
+                        <p class="creature-type">КРЫЛАТЫЙ КОНЬ</p>
+                        <div class="creature-info">
+                            Божественный крылатый конь, родившийся из крови Медузы Горгоны. Символ поэтического вдохновения.
+                        </div>
+                    </div>
+                </div>
+                <!-- Creature 5 -->
+                <div class="creature-card">
+                    <img src="images/griffin.jpg" alt="Грифон" class="creature-image">
+                    <div class="creature-overlay">
+                        <h3 class="creature-name">ГРИФОН</h3>
+                        <p class="creature-type">ЛЕВ-ОРЁЛ</p>
+                        <div class="creature-info">
+                            Мифическое существо с телом льва и головой и крыльями орла. Сторож сокровищ и символ божественной власти.
+                        </div>
+                    </div>
+                </div>
+                <!-- Creature 6 -->
+                <div class="creature-card">
+                    <img src="images/hydra.jpg" alt="Гидра" class="creature-image">
+                    <div class="creature-overlay">
+                        <h3 class="creature-name">ЛЕРНЕЙСКАЯ ГИДРА</h3>
+                        <p class="creature-type">МНОГОГОЛОВАЯ ЗМЕЯ</p>
+                        <div class="creature-info">
+                            Чудовище с девятью головами, одна из которых бессмертна. Убита Гераклом в качестве второго подвига.
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer id="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-logo">MYTHOS</div>
+                <p class="footer-quote">"Мифы — это не ложь, а метафоры, скрывающие глубокие истины о природе человека и вселенной."</p>
+                <div class="copyright">
+                    <p>© 2023 MYTHOS | Все права защищены. Проект создан для образовательных и культурных целей.</p>
+                    <p>Создано с помощью <span class="credits">DeepSeek</span> & <span class="credits">generallisto</span></p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Stars Background with Canvas
+        const canvas = document.getElementById('stars-canvas');
+        const ctx = canvas.getContext('2d');
+        let stars = [];
+        let animationId;
+        
+        function resizeCanvas() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            createStars();
+        }
+        
+        function createStars() {
+            stars = [];
+            const starCount = Math.min(300, Math.floor(window.innerWidth * window.innerHeight / 1500));
+            
+            for (let i = 0; i < starCount; i++) {
+                stars.push({
+                    x: Math.random() * canvas.width,
+                    y: Math.random() * canvas.height,
+                    radius: Math.random() * 2 + 0.5,
+                    speed: Math.random() * 0.4 + 0.1,
+                    opacity: Math.random() * 0.8 + 0.2,
+                    twinkleSpeed: Math.random() * 0.06 + 0.01,
+                    twinkleDirection: Math.random() > 0.5 ? 1 : -1,
+                    parallaxFactor: Math.random() * 0.7 + 0.3
+                });
+            }
+        }
+        
+        function drawStars() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+            
+            stars.forEach(star => {
+                star.opacity += star.twinkleSpeed * star.twinkleDirection;
+                if (star.opacity > 1 || star.opacity < 0.2) {
+                    star.twinkleDirection *= -1;
+                }
+                
+                const gradient = ctx.createRadialGradient(
+                    star.x, star.y, 0,
+                    star.x, star.y, star.radius * 4
+                );
+                gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
+                gradient.addColorStop(0.3, `rgba(255, 255, 255, ${star.opacity * 0.7})`);
+                gradient.addColorStop(1, 'transparent');
+                
+                ctx.beginPath();
+                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
+                ctx.fillStyle = gradient;
+                ctx.fill();
+                
+                if (star.radius > 1.2) {
+                    ctx.save();
+                    ctx.translate(star.x, star.y);
+                    for (let i = 0; i < 6; i++) {
+                        ctx.rotate(Math.PI / 3);
+                        ctx.beginPath();
+                        ctx.moveTo(star.radius * 2, 0);
+                        ctx.lineTo(star.radius * 3.5, 0);
+                        ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity * 0.4})`;
+                        ctx.lineWidth = 1.5;
+                        ctx.stroke();
+                    }
+                    ctx.restore();
+                }
+                
+                star.y += star.speed;
+                if (star.y > canvas.height) {
+                    star.y = 0;
+                    star.x = Math.random() * canvas.width;
+                }
+            });
+            
+            animationId = requestAnimationFrame(drawStars);
+        }
+        
+        // Header scroll effect
+        const header = document.getElementById('header');
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            // Reveal sections on scroll
+            revealSections();
+            revealCards();
+        });
+        
+        // Mobile menu toggle
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const navLinks = document.getElementById('navLinks');
+        
+        mobileMenuBtn.addEventListener('click', () => {
+            navLinks.classList.toggle('active');
+            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
+                ? '<i class="fas fa-times"></i>' 
+                : '<i class="fas fa-bars"></i>';
+        });
+        
+        // Close mobile menu when clicking a link
+        document.querySelectorAll('.nav-links a').forEach(link => {
+            link.addEventListener('click', () => {
+                navLinks.classList.remove('active');
+                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
+            });
+        });
+        
+        // Myths accordion functionality
+        const mythHeaders = document.querySelectorAll('.myth-header');
+        
+        mythHeaders.forEach(header => {
+            header.addEventListener('click', () => {
+                const mythItem = header.parentElement;
+                const isActive = mythItem.classList.contains('active');
+                
+                document.querySelectorAll('.myth-item').forEach(item => {
+                    item.classList.remove('active');
+                });
+                
+                if (!isActive) {
+                    mythItem.classList.add('active');
+                }
+            });
+        });
+        
+        // Reveal sections on scroll
+        function revealSections() {
+            const sections = document.querySelectorAll('.section-transition');
+            const windowHeight = window.innerHeight;
+            
+            sections.forEach(section => {
+                const sectionTop = section.getBoundingClientRect().top;
+                
+                if (sectionTop < windowHeight - 100) {
+                    section.classList.add('visible');
+                }
+            });
+        }
+        
+        // Reveal cards on scroll
+        function revealCards() {
+            const cards = document.querySelectorAll('.god-card, .creature-card');
+            const windowHeight = window.innerHeight;
+            
+            cards.forEach(card => {
+                const cardTop = card.getBoundingClientRect().top;
+                
+                if (cardTop < windowHeight - 150) {
+                    card.classList.add('visible');
+                }
+            });
+        }
+        
+        // Smooth scroll for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                e.preventDefault();
+                
+                const targetId = this.getAttribute('href');
+                if (targetId === '#') return;
+                
+                const targetElement = document.querySelector(targetId);
+                if (targetElement) {
+                    window.scrollTo({
+                        top: targetElement.offsetTop - 80,
+                        behavior: 'smooth'
+                    });
+                }
+            });
+        });
+        
+        // Interactive hover effects
+        document.querySelectorAll('.god-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                const icon = this.querySelector('.god-icon i');
+                if (icon) {
+                    icon.style.transform = 'scale(1.4) rotate(20deg)';
+                }
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                const icon = this.querySelector('.god-icon i');
+                if (icon) {
+                    icon.style.transform = '';
+                }
+            });
+        });
+        
+        // Initialize everything
+        window.addEventListener('load', () => {
+            resizeCanvas();
+            drawStars();
+            revealSections();
+            revealCards();
+        });
+        
+        window.addEventListener('resize', resizeCanvas);
+        
+        // Glow effect for interactive elements
+        document.querySelectorAll('a, button').forEach(el => {
+            el.addEventListener('mouseenter', () => {
+                el.style.filter = 'brightness(1.2) drop-shadow(0 0 10px rgba(255, 195, 0, 0.5))';
+            });
+            
+            el.addEventListener('mouseleave', () => {
+                el.style.filter = '';
+            });
+        });
+    </script>
+</body>
+</html>
