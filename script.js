@@ -1,17 +1,20 @@
 // ============================================
-// MYTHOS - Древнегреческая мифология
-// Современный JavaScript с интерактивными эффектами
+// MYTHOS - Улучшенный JavaScript
+// Максимальные эффекты свечения и плавные переходы
 // ============================================
 
 // Основной модуль приложения
 const MythosApp = (() => {
-    // Конфигурация
+    // Конфигурация с улучшенными параметрами
     const config = {
-        parallaxStrength: 0.05,
+        parallaxStrength: 0.08,
         scrollThreshold: 100,
-        animationDelay: 50,
-        starCount: 200,
-        lightningInterval: 12000
+        animationDelay: 80,
+        starCount: 400,
+        maxGlowIntensity: 0.8,
+        hoverScale: 1.12,
+        sectionTransitionDuration: 1200,
+        mouseTrailEnabled: true
     };
 
     // Состояние приложения
@@ -19,243 +22,517 @@ const MythosApp = (() => {
         scrollPosition: 0,
         isMobileMenuOpen: false,
         activeMyth: 0,
-        lastScrollTime: 0,
-        mousePosition: { x: 0, y: 0 }
+        mousePosition: { x: 0, y: 0 },
+        scrollDirection: 'down',
+        lastScrollY: 0,
+        isScrolling: false,
+        glowIntensity: 0.3,
+        isAnimating: false,
+        loadedSections: new Set()
+    };
+
+    // DOM элементы
+    let dom = {
+        canvas: null,
+        ctx: null,
+        header: null,
+        mobileMenuBtn: null,
+        navLinks: null,
+        stars: [],
+        mouseTrail: [],
+        glowElements: [],
+        particles: []
     };
 
     // Инициализация приложения
     const init = () => {
-        console.log('🔼 Mythos App Initializing...');
+        console.log('✨ MYTHOS Enhanced Initializing...');
+        
+        // Получаем DOM элементы
+        cacheDOM();
         
         // Инициализация всех модулей
-        initStarsBackground();
+        initEnhancedStars();
+        initMouseTrail();
+        initGlowEffects();
+        initParticles();
         initNavigation();
         initGodCards();
         initMythsAccordion();
         initGallery();
         initScrollAnimations();
         initParallaxEffects();
-        initMouseEffects();
-        initLightningEffects();
         initScrollProgress();
+        initSectionTransitions();
+        initLazyLoading();
         
         // Слушатели событий
         setupEventListeners();
         
         // Запуск анимаций
-        startAnimations();
+        startEnhancedAnimations();
         
-        console.log('✅ Mythos App Ready!');
+        // Инициализация после загрузки
+        window.addEventListener('load', () => {
+            document.body.classList.add('loaded');
+            animateOnLoad();
+        });
+        
+        console.log('🎉 MYTHOS Enhanced Ready!');
     };
 
-    // ===== ФОНОВЫЕ ЭФФЕКТЫ =====
-    
-    // Звездное небо на Canvas
-    const initStarsBackground = () => {
-        const canvas = document.getElementById('stars-canvas');
-        if (!canvas) return;
+    // ===== УЛУЧШЕННОЕ ЗВЕЗДНОЕ НЕБО =====
+    const initEnhancedStars = () => {
+        dom.canvas = document.getElementById('stars-canvas');
+        if (!dom.canvas) return;
         
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        let animationId;
+        dom.ctx = dom.canvas.getContext('2d');
+        dom.stars = [];
         
         const resizeCanvas = () => {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            createStars();
+            dom.canvas.width = window.innerWidth;
+            dom.canvas.height = window.innerHeight;
+            createEnhancedStars();
         };
         
-        const createStars = () => {
-            stars = [];
+        const createEnhancedStars = () => {
+            dom.stars = [];
             const density = Math.min(config.starCount, 
-                Math.floor((canvas.width * canvas.height) / 2000));
+                Math.floor((dom.canvas.width * dom.canvas.height) / 1000));
             
             for (let i = 0; i < density; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 1.5 + 0.5,
-                    speed: Math.random() * 0.3 + 0.1,
-                    opacity: Math.random() * 0.7 + 0.3,
-                    twinkleSpeed: Math.random() * 0.05 + 0.01,
+                const size = Math.random() * 3 + 0.5;
+                const speed = Math.random() * 0.5 + 0.1;
+                
+                dom.stars.push({
+                    x: Math.random() * dom.canvas.width,
+                    y: Math.random() * dom.canvas.height,
+                    radius: size,
+                    originalRadius: size,
+                    speed: speed,
+                    opacity: Math.random() * 0.9 + 0.1,
+                    twinkleSpeed: Math.random() * 0.08 + 0.02,
                     twinkleDirection: Math.random() > 0.5 ? 1 : -1,
-                    parallaxFactor: Math.random() * 0.5 + 0.5
+                    parallaxFactor: Math.random() * 0.8 + 0.2,
+                    color: Math.random() > 0.8 ? 
+                        `rgba(255, 240, 179, ${Math.random() * 0.5 + 0.3})` :
+                        `rgba(255, 255, 255, ${Math.random() * 0.7 + 0.2})`,
+                    pulsePhase: Math.random() * Math.PI * 2,
+                    pulseSpeed: Math.random() * 0.03 + 0.01
                 });
             }
         };
         
-        const drawStars = () => {
-            // Очистка с легким размытием для следов
-            ctx.fillStyle = 'rgba(10, 14, 23, 0.05)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
+        const drawEnhancedStars = () => {
+            // Очистка с легким размытием для эффекта шлейфа
+            dom.ctx.fillStyle = 'rgba(5, 8, 17, 0.1)';
+            dom.ctx.fillRect(0, 0, dom.canvas.width, dom.canvas.height);
             
-            stars.forEach(star => {
+            dom.stars.forEach(star => {
+                // Пульсация
+                star.pulsePhase += star.pulseSpeed;
+                const pulse = Math.sin(star.pulsePhase) * 0.3 + 0.7;
+                
                 // Мерцание
                 star.opacity += star.twinkleSpeed * star.twinkleDirection;
-                if (star.opacity > 1 || star.opacity < 0.2) {
+                if (star.opacity > 1 || star.opacity < 0.1) {
                     star.twinkleDirection *= -1;
                 }
                 
-                // Параллакс эффект при скролле
+                // Параллакс
                 const parallaxY = state.scrollPosition * config.parallaxStrength * star.parallaxFactor;
+                const currentRadius = star.radius * pulse;
                 
-                // Рисование звезды с градиентом
-                const gradient = ctx.createRadialGradient(
+                // Градиент для звезды
+                const gradient = dom.ctx.createRadialGradient(
                     star.x, star.y + parallaxY, 0,
-                    star.x, star.y + parallaxY, star.radius * 3
+                    star.x, star.y + parallaxY, currentRadius * 4
                 );
-                gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
-                gradient.addColorStop(0.5, `rgba(255, 255, 255, ${star.opacity * 0.5})`);
-                gradient.addColorStop(1, 'transparent');
                 
-                ctx.beginPath();
-                ctx.arc(star.x, star.y + parallaxY, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                
-                // Создание лучей для больших звезд
-                if (star.radius > 1) {
-                    ctx.save();
-                    ctx.translate(star.x, star.y + parallaxY);
-                    for (let i = 0; i < 4; i++) {
-                        ctx.rotate(Math.PI / 2);
-                        ctx.beginPath();
-                        ctx.moveTo(star.radius * 2, 0);
-                        ctx.lineTo(star.radius * 4, 0);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity * 0.3})`;
-                        ctx.lineWidth = 1;
-                        ctx.stroke();
-                    }
-                    ctx.restore();
+                if (star.color.includes('255, 240, 179')) {
+                    gradient.addColorStop(0, `rgba(255, 240, 179, ${star.opacity})`);
+                    gradient.addColorStop(0.3, `rgba(255, 215, 0, ${star.opacity * 0.7})`);
+                    gradient.addColorStop(1, 'transparent');
+                } else {
+                    gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
+                    gradient.addColorStop(0.5, `rgba(255, 255, 255, ${star.opacity * 0.5})`);
+                    gradient.addColorStop(1, 'transparent');
                 }
                 
-                // Движение звезд
+                // Рисование звезды
+                dom.ctx.beginPath();
+                dom.ctx.arc(star.x, star.y + parallaxY, currentRadius, 0, Math.PI * 2);
+                dom.ctx.fillStyle = gradient;
+                dom.ctx.fill();
+                
+                // Лучи для больших звезд
+                if (currentRadius > 1.5) {
+                    dom.ctx.save();
+                    dom.ctx.translate(star.x, star.y + parallaxY);
+                    const rayCount = star.color.includes('255, 240, 179') ? 8 : 4;
+                    
+                    for (let i = 0; i < rayCount; i++) {
+                        dom.ctx.rotate((Math.PI * 2) / rayCount);
+                        dom.ctx.beginPath();
+                        dom.ctx.moveTo(currentRadius * 1.5, 0);
+                        dom.ctx.lineTo(currentRadius * 3, 0);
+                        dom.ctx.strokeStyle = star.color.replace(')', `, ${star.opacity * 0.4})`);
+                        dom.ctx.lineWidth = 1.5;
+                        dom.ctx.stroke();
+                    }
+                    dom.ctx.restore();
+                }
+                
+                // Движение
                 star.y += star.speed;
-                if (star.y > canvas.height) {
+                if (star.y > dom.canvas.height) {
                     star.y = 0;
-                    star.x = Math.random() * canvas.width;
+                    star.x = Math.random() * dom.canvas.width;
+                }
+                
+                // Эффект от мыши
+                const dx = star.x - state.mousePosition.x;
+                const dy = star.y - state.mousePosition.y;
+                const distance = Math.sqrt(dx * dx + dy * dy);
+                
+                if (distance < 200) {
+                    const force = (200 - distance) / 200;
+                    star.x += dx * force * 0.01;
+                    star.y += dy * force * 0.01;
                 }
             });
             
-            animationId = requestAnimationFrame(drawStars);
+            requestAnimationFrame(drawEnhancedStars);
         };
         
-        // Публичные методы
-        const start = () => {
-            resizeCanvas();
-            drawStars();
-        };
-        
-        const stop = () => {
-            cancelAnimationFrame(animationId);
-        };
-        
-        // Инициализация
-        start();
+        // Запуск
+        resizeCanvas();
+        drawEnhancedStars();
         
         // Возврат методов управления
-        return { start, stop, resizeCanvas };
+        return { resizeCanvas };
     };
-    
-    // Эффекты молний
-    const initLightningEffects = () => {
-        const lightningContainer = document.querySelector('.lightning-container');
-        if (!lightningContainer) return;
+
+    // ===== ЭФФЕКТЫ СВЕЧЕНИЯ =====
+    const initGlowEffects = () => {
+        dom.glowElements = document.querySelectorAll('.god-card, .creature-card, .btn, .section-title h2, .logo');
         
-        const createLightning = () => {
-            const lightning = document.createElement('div');
-            lightning.className = 'lightning-flash';
+        // Создание свечения для элементов
+        dom.glowElements.forEach(element => {
+            if (!element.dataset.glowInitialized) {
+                element.dataset.glowInitialized = 'true';
+                
+                // Добавление свечения при наведении
+                element.addEventListener('mouseenter', () => {
+                    if (state.isAnimating) return;
+                    
+                    element.style.filter = `
+                        brightness(1.3) 
+                        drop-shadow(0 0 30px rgba(255, 215, 0, 0.6))
+                        drop-shadow(0 0 60px rgba(255, 157, 0, 0.4))
+                    `;
+                    
+                    // Анимация пульсации
+                    element.style.animation = 'pulseGlow 2s infinite';
+                });
+                
+                element.addEventListener('mouseleave', () => {
+                    element.style.filter = '';
+                    element.style.animation = '';
+                });
+                
+                // Клик с эффектом
+                element.addEventListener('click', (e) => {
+                    if (element.classList.contains('btn') || element.closest('.btn')) {
+                        createClickRipple(e);
+                    }
+                });
+            }
+        });
+        
+        // Динамическое свечение при скролле
+        const updateGlowIntensity = () => {
+            const intensity = 0.3 + (state.scrollPosition / 2000) * 0.5;
+            state.glowIntensity = Math.min(intensity, config.maxGlowIntensity);
             
-            // Случайные параметры
-            const width = Math.random() * 3 + 1;
-            const height = Math.random() * 150 + 100;
-            const left = Math.random() * 100;
-            const opacity = Math.random() * 0.3 + 0.1;
-            const duration = Math.random() * 300 + 100;
-            
-            // Применение стилей
-            lightning.style.cssText = `
-                position: fixed;
-                top: 0;
-                left: ${left}%;
-                width: ${width}px;
-                height: ${height}px;
-                background: linear-gradient(to bottom, 
-                    rgba(255, 255, 255, ${opacity}) 0%,
-                    rgba(255, 255, 255, ${opacity * 0.5}) 50%,
-                    transparent 100%);
-                opacity: 0;
-                z-index: -1;
-                pointer-events: none;
-                filter: blur(1px);
-                animation: lightningFlash ${duration}ms ease-out;
-            `;
-            
-            // Добавление в DOM
-            lightningContainer.appendChild(lightning);
-            
-            // Удаление после анимации
-            setTimeout(() => {
-                if (lightning.parentNode) {
-                    lightning.parentNode.removeChild(lightning);
-                }
-            }, duration);
+            document.documentElement.style.setProperty(
+                '--glow-intensity', 
+                state.glowIntensity
+            );
         };
         
-        // Создание молний с интервалом
-        setInterval(createLightning, config.lightningInterval);
-        createLightning(); // Первая молния
+        // Создание CSS для анимации пульсации
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes pulseGlow {
+                0%, 100% { 
+                    filter: brightness(1.3) 
+                            drop-shadow(0 0 30px rgba(255, 215, 0, 0.6))
+                            drop-shadow(0 0 60px rgba(255, 157, 0, 0.4));
+                }
+                50% { 
+                    filter: brightness(1.5) 
+                            drop-shadow(0 0 50px rgba(255, 240, 179, 0.8))
+                            drop-shadow(0 0 80px rgba(255, 215, 0, 0.6));
+                }
+            }
+            
+            @keyframes ripple {
+                0% {
+                    transform: scale(0);
+                    opacity: 1;
+                }
+                100% {
+                    transform: scale(4);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
     };
-    
-    // ===== НАВИГАЦИЯ =====
-    
+
+    // Создание ripple эффекта
+    const createClickRipple = (event) => {
+        const btn = event.currentTarget;
+        const circle = document.createElement('span');
+        const rect = btn.getBoundingClientRect();
+        
+        const diameter = Math.max(rect.width, rect.height);
+        const radius = diameter / 2;
+        
+        circle.style.width = circle.style.height = `${diameter}px`;
+        circle.style.left = `${event.clientX - rect.left - radius}px`;
+        circle.style.top = `${event.clientY - rect.top - radius}px`;
+        circle.style.background = 'radial-gradient(circle, rgba(255, 240, 179, 0.6) 0%, transparent 70%)';
+        circle.style.position = 'absolute';
+        circle.style.borderRadius = '50%';
+        circle.style.transform = 'scale(0)';
+        circle.style.animation = 'ripple 0.6s linear';
+        circle.style.zIndex = '1';
+        circle.style.pointerEvents = 'none';
+        
+        btn.style.position = 'relative';
+        btn.style.overflow = 'hidden';
+        btn.appendChild(circle);
+        
+        setTimeout(() => {
+            if (circle.parentNode === btn) {
+                btn.removeChild(circle);
+            }
+        }, 600);
+    };
+
+    // ===== СЛЕД МЫШИ С ЧАСТИЦАМИ =====
+    const initMouseTrail = () => {
+        if (!config.mouseTrailEnabled || window.innerWidth < 768) return;
+        
+        const trailContainer = document.createElement('div');
+        trailContainer.className = 'mouse-trail';
+        trailContainer.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 9998;
+        `;
+        document.body.appendChild(trailContainer);
+        
+        dom.mouseTrail = [];
+        
+        document.addEventListener('mousemove', (e) => {
+            state.mousePosition = { x: e.clientX, y: e.clientY };
+            
+            // Создание частицы следа
+            if (Math.random() > 0.3) {
+                createTrailParticle(e.clientX, e.clientY, trailContainer);
+            }
+            
+            // Обновление существующих частиц
+            dom.mouseTrail = dom.mouseTrail.filter(particle => {
+                particle.life -= 2;
+                particle.element.style.opacity = particle.life / 100;
+                particle.element.style.transform = `
+                    translate(${particle.x}px, ${particle.y}px) 
+                    scale(${particle.life / 100})
+                `;
+                
+                if (particle.life <= 0) {
+                    particle.element.remove();
+                    return false;
+                }
+                return true;
+            });
+        });
+        
+        // Создание частицы следа
+        const createTrailParticle = (x, y, container) => {
+            const particle = document.createElement('div');
+            particle.style.cssText = `
+                position: absolute;
+                width: 6px;
+                height: 6px;
+                background: radial-gradient(circle, 
+                    rgba(255, 240, 179, 0.8) 0%,
+                    rgba(255, 215, 0, 0.5) 50%,
+                    transparent 100%);
+                border-radius: 50%;
+                pointer-events: none;
+                filter: blur(1px);
+                transform: translate(${x}px, ${y}px) scale(0);
+            `;
+            
+            container.appendChild(particle);
+            
+            const trailParticle = {
+                element: particle,
+                x: x,
+                y: y,
+                life: 100,
+                vx: (Math.random() - 0.5) * 4,
+                vy: (Math.random() - 0.5) * 4
+            };
+            
+            dom.mouseTrail.push(trailParticle);
+            
+            // Анимация
+            const animate = () => {
+                trailParticle.x += trailParticle.vx;
+                trailParticle.y += trailParticle.vy;
+                trailParticle.vx *= 0.95;
+                trailParticle.vy *= 0.95;
+                
+                if (trailParticle.life > 0) {
+                    requestAnimationFrame(animate);
+                }
+            };
+            animate();
+        };
+    };
+
+    // ===== ПАРТИКУЛЫ ДЛЯ ФОНА =====
+    const initParticles = () => {
+        const particleCount = Math.min(50, Math.floor(window.innerWidth * window.innerHeight / 20000));
+        dom.particles = [];
+        
+        for (let i = 0; i < particleCount; i++) {
+            createParticle();
+        }
+        
+        function createParticle() {
+            const particle = document.createElement('div');
+            particle.className = 'floating-particle';
+            
+            const size = Math.random() * 4 + 1;
+            const duration = Math.random() * 20 + 10;
+            const delay = Math.random() * 5;
+            
+            particle.style.cssText = `
+                position: fixed;
+                width: ${size}px;
+                height: ${size}px;
+                background: rgba(255, 215, 0, ${Math.random() * 0.3 + 0.1});
+                border-radius: 50%;
+                pointer-events: none;
+                z-index: -1;
+                filter: blur(${size / 2}px);
+                left: ${Math.random() * 100}%;
+                top: ${Math.random() * 100}%;
+                animation: floatParticle ${duration}s ease-in-out ${delay}s infinite alternate;
+            `;
+            
+            document.body.appendChild(particle);
+            dom.particles.push(particle);
+            
+            // CSS для анимации
+            if (!document.getElementById('particle-animations')) {
+                const style = document.createElement('style');
+                style.id = 'particle-animations';
+                style.textContent = `
+                    @keyframes floatParticle {
+                        0% {
+                            transform: translate(0, 0) scale(1);
+                            opacity: ${Math.random() * 0.5 + 0.3};
+                        }
+                        100% {
+                            transform: translate(
+                                ${Math.random() * 100 - 50}px, 
+                                ${Math.random() * 100 - 50}px
+                            ) scale(${Math.random() * 0.5 + 0.8});
+                            opacity: ${Math.random() * 0.5 + 0.1};
+                        }
+                    }
+                `;
+                document.head.appendChild(style);
+            }
+        }
+    };
+
+    // ===== УЛУЧШЕННАЯ НАВИГАЦИЯ =====
     const initNavigation = () => {
-        const header = document.getElementById('header');
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.getElementById('navLinks');
+        dom.header = document.getElementById('header');
+        dom.mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        dom.navLinks = document.getElementById('navLinks');
         
-        if (!header || !mobileMenuBtn || !navLinks) return;
+        if (!dom.header || !dom.mobileMenuBtn || !dom.navLinks) return;
         
-        // Прокрутка заголовка
+        // Прокрутка заголовка с эффектом свечения
         const handleScroll = () => {
             state.scrollPosition = window.scrollY;
             
             if (state.scrollPosition > config.scrollThreshold) {
-                header.classList.add('scrolled');
+                dom.header.classList.add('scrolled');
+                dom.header.style.boxShadow = `
+                    0 15px 50px rgba(0, 0, 0, 0.6),
+                    0 0 40px rgba(255, 157, 0, ${0.1 + state.glowIntensity * 0.1})
+                `;
             } else {
-                header.classList.remove('scrolled');
+                dom.header.classList.remove('scrolled');
+                dom.header.style.boxShadow = '';
             }
             
-            // Обновление прогресс-бара
-            updateScrollProgress();
+            // Обновление активного пункта меню
+            updateActiveNavLink();
+            updateGlowIntensity();
         };
         
-        // Мобильное меню
+        // Мобильное меню с анимацией
         const toggleMobileMenu = () => {
             state.isMobileMenuOpen = !state.isMobileMenuOpen;
-            navLinks.classList.toggle('active');
+            dom.navLinks.classList.toggle('active');
             
-            const icon = mobileMenuBtn.querySelector('i');
+            const icon = dom.mobileMenuBtn.querySelector('i');
             if (icon) {
-                icon.className = state.isMobileMenuOpen ? 'fas fa-times' : 'fas fa-bars';
+                if (state.isMobileMenuOpen) {
+                    icon.className = 'fas fa-times';
+                    dom.mobileMenuBtn.style.transform = 'rotate(90deg) scale(1.1)';
+                    dom.mobileMenuBtn.style.boxShadow = '0 0 40px rgba(255, 215, 0, 0.4)';
+                } else {
+                    icon.className = 'fas fa-bars';
+                    dom.mobileMenuBtn.style.transform = '';
+                    dom.mobileMenuBtn.style.boxShadow = '';
+                }
             }
             
-            // Блокировка скролла при открытом меню
+            // Блокировка скролла
             document.body.style.overflow = state.isMobileMenuOpen ? 'hidden' : '';
+            document.body.style.position = state.isMobileMenuOpen ? 'fixed' : '';
         };
         
         // Закрытие меню при клике на ссылку
         const closeMobileMenu = () => {
             if (state.isMobileMenuOpen) {
                 state.isMobileMenuOpen = false;
-                navLinks.classList.remove('active');
-                const icon = mobileMenuBtn.querySelector('i');
+                dom.navLinks.classList.remove('active');
+                const icon = dom.mobileMenuBtn.querySelector('i');
                 if (icon) icon.className = 'fas fa-bars';
                 document.body.style.overflow = '';
+                document.body.style.position = '';
             }
         };
         
-        // Плавная прокрутка к якорям
+        // Плавная прокрутка с эффектами
         const smoothScroll = (e) => {
             const targetId = e.currentTarget.getAttribute('href');
             if (targetId === '#' || !targetId.startsWith('#')) return;
@@ -264,9 +541,16 @@ const MythosApp = (() => {
             const targetElement = document.querySelector(targetId);
             if (!targetElement) return;
             
-            const headerHeight = header.offsetHeight;
+            const headerHeight = dom.header.offsetHeight;
             const targetPosition = targetElement.offsetTop - headerHeight;
             
+            // Эффект перед прокруткой
+            e.currentTarget.style.transform = 'scale(0.95)';
+            setTimeout(() => {
+                e.currentTarget.style.transform = '';
+            }, 200);
+            
+            // Прокрутка
             window.scrollTo({
                 top: targetPosition,
                 behavior: 'smooth'
@@ -276,16 +560,29 @@ const MythosApp = (() => {
         };
         
         // Назначение обработчиков
-        mobileMenuBtn.addEventListener('click', toggleMobileMenu);
+        dom.mobileMenuBtn.addEventListener('click', toggleMobileMenu);
         
         document.querySelectorAll('.nav-links a').forEach(link => {
             link.addEventListener('click', (e) => {
                 smoothScroll(e);
                 closeMobileMenu();
             });
+            
+            // Эффект наведения для ссылок
+            link.addEventListener('mouseenter', () => {
+                if (!state.isMobileMenuOpen) {
+                    link.style.transform = 'translateY(-3px)';
+                    link.style.textShadow = '0 0 20px rgba(255, 215, 0, 0.8)';
+                }
+            });
+            
+            link.addEventListener('mouseleave', () => {
+                link.style.transform = '';
+                link.style.textShadow = '';
+            });
         });
         
-        // Активный пункт меню при скролле
+        // Активный пункт меню
         const updateActiveNavLink = () => {
             const sections = document.querySelectorAll('section[id]');
             const navLinks = document.querySelectorAll('.nav-links a');
@@ -294,9 +591,9 @@ const MythosApp = (() => {
             sections.forEach(section => {
                 const sectionTop = section.offsetTop;
                 const sectionHeight = section.clientHeight;
-                const headerHeight = document.getElementById('header').offsetHeight;
+                const headerHeight = dom.header.offsetHeight;
                 
-                if (state.scrollPosition >= (sectionTop - headerHeight - 100)) {
+                if (state.scrollPosition >= (sectionTop - headerHeight - 150)) {
                     current = section.getAttribute('id');
                 }
             });
@@ -305,212 +602,31 @@ const MythosApp = (() => {
                 link.classList.remove('active');
                 if (link.getAttribute('href') === `#${current}`) {
                     link.classList.add('active');
+                    link.style.color = 'var(--color-gold-2)';
+                    link.style.textShadow = '0 0 15px rgba(255, 215, 0, 0.6)';
+                } else {
+                    link.style.color = '';
+                    link.style.textShadow = '';
                 }
             });
         };
         
-        // Возврат методов
-        return {
-            handleScroll,
-            updateActiveNavLink,
-            closeMobileMenu
-        };
+        return { handleScroll, updateActiveNavLink, closeMobileMenu };
     };
-    
-    // ===== КАРТОЧКИ БОГОВ =====
-    
+
+    // ===== КАРТОЧКИ БОГОВ С 3D ЭФФЕКТАМИ =====
     const initGodCards = () => {
         const godCards = document.querySelectorAll('.god-card');
-        if (godCards.length === 0) return;
         
         godCards.forEach((card, index) => {
             // Задержка появления
             card.style.transitionDelay = `${index * config.animationDelay}ms`;
             
-            // Эффект при наведении
-            card.addEventListener('mouseenter', (e) => {
-                const cardRect = card.getBoundingClientRect();
-                const mouseX = e.clientX - cardRect.left;
-                const mouseY = e.clientY - cardRect.top;
-                
-                // Параллакс эффект внутри карточки
-                const centerX = cardRect.width / 2;
-                const centerY = cardRect.height / 2;
-                const rotateY = ((mouseX - centerX) / centerX) * 5;
-                const rotateX = ((centerY - mouseY) / centerY) * 5;
-                
-                card.style.transform = `
-                    translateY(-10px) 
-                    scale(1.03) 
-                    rotateX(${rotateX}deg) 
-                    rotateY(${rotateY}deg)
-                `;
-                
-                // Анимация иконки
-                const icon = card.querySelector('.god-icon i');
-                if (icon) {
-                    icon.style.transform = 'scale(1.3) rotate(15deg)';
-                    setTimeout(() => {
-                        icon.style.transform = 'scale(1.2) rotate(0deg)';
-                    }, 200);
-                }
-                
-                // Подсветка символов
-                const symbols = card.querySelectorAll('.god-symbols span');
-                symbols.forEach((symbol, i) => {
-                    setTimeout(() => {
-                        symbol.style.transform = 'translateY(-2px)';
-                        symbol.style.boxShadow = '0 5px 15px rgba(255, 195, 0, 0.2)';
-                    }, i * 100);
-                });
-            });
-            
-            card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) scale(1) rotateX(0) rotateY(0)';
-                
-                // Сброс иконки
-                const icon = card.querySelector('.god-icon i');
-                if (icon) {
-                    icon.style.transform = '';
-                }
-                
-                // Сброс символов
-                const symbols = card.querySelectorAll('.god-symbols span');
-                symbols.forEach(symbol => {
-                    symbol.style.transform = '';
-                    symbol.style.boxShadow = '';
-                });
-            });
-            
-            // Клик для расширенной информации
-            card.addEventListener('click', (e) => {
-                if (window.innerWidth > 768) return; // Только на мобильных
-                
-                e.preventDefault();
-                card.classList.toggle('expanded');
-                
-                if (card.classList.contains('expanded')) {
-                    const content = card.querySelector('.god-description');
-                    const fullText = content.getAttribute('data-full') || content.textContent;
-                    const shortText = content.getAttribute('data-short') || fullText.substring(0, 100) + '...';
-                    
-                    content.setAttribute('data-full', fullText);
-                    content.setAttribute('data-short', shortText);
-                    content.textContent = fullText;
-                } else {
-                    const content = card.querySelector('.god-description');
-                    const shortText = content.getAttribute('data-short');
-                    if (shortText) {
-                        content.textContent = shortText;
-                    }
-                }
-            });
-        });
-        
-        // Анимация появления при загрузке
-        const observer = new IntersectionObserver((entries) => {
-            entries.forEach(entry => {
-                if (entry.isIntersecting) {
-                    entry.target.classList.add('visible');
-                    observer.unobserve(entry.target);
-                }
-            });
-        }, { threshold: 0.1 });
-        
-        godCards.forEach(card => observer.observe(card));
-    };
-    
-    // ===== АККОРДЕОН МИФОВ =====
-    
-    const initMythsAccordion = () => {
-        const mythItems = document.querySelectorAll('.myth-item');
-        if (mythItems.length === 0) return;
-        
-        // Открытие первого элемента по умолчанию
-        if (mythItems.length > 0) {
-            mythItems[0].classList.add('active');
-            state.activeMyth = 0;
-        }
-        
-        mythItems.forEach((item, index) => {
-            const header = item.querySelector('.myth-header');
-            const content = item.querySelector('.myth-content');
-            const icon = item.querySelector('.myth-icon');
-            
-            if (!header || !content) return;
-            
-            header.addEventListener('click', () => {
-                const isActive = item.classList.contains('active');
-                
-                // Закрытие всех элементов
-                mythItems.forEach(otherItem => {
-                    otherItem.classList.remove('active');
-                    const otherIcon = otherItem.querySelector('.myth-icon');
-                    if (otherIcon) otherIcon.className = 'fas fa-plus myth-icon';
-                });
-                
-                // Открытие текущего, если он был закрыт
-                if (!isActive) {
-                    item.classList.add('active');
-                    state.activeMyth = index;
-                    
-                    // Анимация иконки
-                    if (icon) {
-                        icon.className = 'fas fa-plus myth-icon';
-                        setTimeout(() => {
-                            icon.className = 'fas fa-times myth-icon';
-                        }, 300);
-                    }
-                    
-                    // Анимация текста
-                    const text = item.querySelector('.myth-text');
-                    if (text) {
-                        text.style.opacity = '0';
-                        text.style.transform = 'translateY(10px)';
-                        
-                        setTimeout(() => {
-                            text.style.opacity = '1';
-                            text.style.transform = 'translateY(0)';
-                        }, 300);
-                    }
-                }
-            });
-            
-            // Анимация появления
-            item.style.opacity = '0';
-            item.style.transform = 'translateX(-20px)';
-            item.style.transitionDelay = `${index * 100}ms`;
-            
-            setTimeout(() => {
-                item.style.opacity = '1';
-                item.style.transform = 'translateX(0)';
-            }, 500 + index * 100);
-        });
-    };
-    
-    // ===== ГАЛЕРЕЯ СУЩЕСТВ =====
-    
-    const initGallery = () => {
-        const creatureCards = document.querySelectorAll('.creature-card');
-        if (creatureCards.length === 0) return;
-        
-        // Создание сетки с masonry-эффектом
-        const grid = document.querySelector('.creatures-grid');
-        if (grid) {
-            // Случайная высота для визуального интереса
-            creatureCards.forEach(card => {
-                const randomHeight = Math.random() * 50 + 250;
-                card.style.height = `${randomHeight}px`;
-            });
-        }
-        
-        // Эффекты при наведении
-        creatureCards.forEach((card, index) => {
-            // Задержка появления
-            card.style.transitionDelay = `${index * 50}ms`;
-            
             // 3D эффект при наведении
             card.addEventListener('mouseenter', (e) => {
+                if (state.isAnimating) return;
+                state.isAnimating = true;
+                
                 const rect = card.getBoundingClientRect();
                 const x = e.clientX - rect.left;
                 const y = e.clientY - rect.top;
@@ -521,83 +637,578 @@ const MythosApp = (() => {
                 const rotateY = ((x - centerX) / centerX) * 10;
                 const rotateX = ((centerY - y) / centerY) * 10;
                 
+                // Анимация 3D трансформации
                 card.style.transform = `
-                    translateY(-10px) 
+                    translateY(-20px) 
+                    scale(${config.hoverScale}) 
                     rotateX(${rotateX}deg) 
                     rotateY(${rotateY}deg)
                 `;
+                card.style.boxShadow = `
+                    0 40px 80px rgba(0, 0, 0, 0.6),
+                    0 0 60px rgba(255, 157, 0, 0.4),
+                    0 0 100px rgba(255, 215, 0, 0.3)
+                `;
                 
-                // Эффект подсветки
+                // Анимация иконки
+                const icon = card.querySelector('.god-icon i');
+                if (icon) {
+                    icon.style.transform = 'scale(1.5) rotate(25deg)';
+                    icon.style.filter = 'drop-shadow(0 0 20px rgba(255, 240, 179, 0.8))';
+                }
+                
+                // Анимация символов
+                const symbols = card.querySelectorAll('.god-symbols span');
+                symbols.forEach((symbol, i) => {
+                    setTimeout(() => {
+                        symbol.style.transform = 'translateY(-8px) scale(1.1)';
+                        symbol.style.boxShadow = '0 10px 30px rgba(255, 195, 0, 0.4)';
+                    }, i * 100);
+                });
+                
+                setTimeout(() => {
+                    state.isAnimating = false;
+                }, 300);
+            });
+            
+            card.addEventListener('mousemove', (e) => {
+                if (state.isAnimating) return;
+                
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateY = ((x - centerX) / centerX) * 5;
+                const rotateX = ((centerY - y) / centerY) * 5;
+                
+                card.style.transform = `
+                    translateY(-20px) 
+                    scale(${config.hoverScale}) 
+                    rotateX(${rotateX}deg) 
+                    rotateY(${rotateY}deg)
+                `;
+            });
+            
+            card.addEventListener('mouseleave', () => {
+                if (state.isAnimating) return;
+                
+                card.style.transform = 'translateY(0) scale(1) rotateX(0) rotateY(0)';
+                card.style.boxShadow = '';
+                
+                // Сброс иконки
+                const icon = card.querySelector('.god-icon i');
+                if (icon) {
+                    icon.style.transform = '';
+                    icon.style.filter = '';
+                }
+                
+                // Сброс символов
+                const symbols = card.querySelectorAll('.god-symbols span');
+                symbols.forEach(symbol => {
+                    symbol.style.transform = '';
+                    symbol.style.boxShadow = '';
+                });
+            });
+            
+            // Клик с эффектом
+            card.addEventListener('click', (e) => {
+                createClickRipple(e);
+                
+                // Временное увеличение свечения
+                card.style.filter = 'brightness(1.4)';
+                setTimeout(() => {
+                    card.style.filter = '';
+                }, 300);
+            });
+        });
+        
+        // Наблюдатель для появления
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                    observer.unobserve(entry.target);
+                    
+                    // Эффект при появлении
+                    setTimeout(() => {
+                        entry.target.style.transform = 'translateY(0) rotateY(0) scale(1)';
+                    }, index * 100);
+                }
+            });
+        }, { 
+            threshold: 0.1,
+            rootMargin: '50px'
+        });
+        
+        godCards.forEach(card => observer.observe(card));
+    };
+
+    // ===== УЛУЧШЕННЫЙ АККОРДЕОН =====
+    const initMythsAccordion = () => {
+        const mythItems = document.querySelectorAll('.myth-item');
+        
+        // Открытие первого элемента
+        if (mythItems.length > 0) {
+            mythItems[0].classList.add('active');
+            state.activeMyth = 0;
+            
+            // Анимация для первого элемента
+            setTimeout(() => {
+                mythItems[0].style.transform = 'translateX(0)';
+                mythItems[0].style.opacity = '1';
+            }, 500);
+        }
+        
+        mythItems.forEach((item, index) => {
+            const header = item.querySelector('.myth-header');
+            const content = item.querySelector('.myth-content');
+            const icon = item.querySelector('.myth-icon');
+            
+            if (!header || !content) return;
+            
+            // Анимация появления
+            item.style.opacity = '0';
+            item.style.transform = `translateX(${index % 2 === 0 ? -50 : 50}px)`;
+            item.style.transitionDelay = `${index * 200}ms`;
+            
+            setTimeout(() => {
+                item.style.opacity = '1';
+                item.style.transform = 'translateX(0)';
+            }, 600 + index * 200);
+            
+            header.addEventListener('click', () => {
+                const isActive = item.classList.contains('active');
+                
+                // Закрытие всех с анимацией
+                mythItems.forEach(otherItem => {
+                    if (otherItem !== item && otherItem.classList.contains('active')) {
+                        otherItem.classList.remove('active');
+                        const otherIcon = otherItem.querySelector('.myth-icon');
+                        if (otherIcon) {
+                            otherIcon.style.transform = 'rotate(0deg)';
+                            otherIcon.style.color = 'var(--color-gold-2)';
+                        }
+                    }
+                });
+                
+                // Открытие текущего
+                if (!isActive) {
+                    item.classList.add('active');
+                    state.activeMyth = index;
+                    
+                    // Анимация иконки
+                    if (icon) {
+                        icon.style.transform = 'rotate(135deg)';
+                        icon.style.color = 'var(--color-gold-3)';
+                        icon.style.filter = 'drop-shadow(0 0 15px rgba(255, 240, 179, 0.6))';
+                    }
+                    
+                    // Анимация текста
+                    const text = item.querySelector('.myth-text');
+                    if (text) {
+                        text.style.opacity = '0';
+                        text.style.transform = 'translateY(20px)';
+                        
+                        setTimeout(() => {
+                            text.style.opacity = '1';
+                            text.style.transform = 'translateY(0)';
+                        }, 300);
+                    }
+                    
+                    // Эффект свечения
+                    item.style.boxShadow = '0 25px 60px rgba(0, 0, 0, 0.5), 0 0 50px rgba(255, 157, 0, 0.3)';
+                } else {
+                    item.classList.remove('active');
+                    if (icon) {
+                        icon.style.transform = 'rotate(0deg)';
+                        icon.style.color = 'var(--color-gold-2)';
+                        icon.style.filter = '';
+                    }
+                    item.style.boxShadow = '';
+                }
+            });
+            
+            // Эффект наведения
+            header.addEventListener('mouseenter', () => {
+                if (!item.classList.contains('active')) {
+                    header.style.background = 'rgba(255, 215, 0, 0.1)';
+                    header.style.transform = 'translateX(10px)';
+                }
+            });
+            
+            header.addEventListener('mouseleave', () => {
+                if (!item.classList.contains('active')) {
+                    header.style.background = '';
+                    header.style.transform = '';
+                }
+            });
+        });
+    };
+
+    // ===== ГАЛЕРЕЯ С УЛУЧШЕННЫМИ ЭФФЕКТАМИ =====
+    const initGallery = () => {
+        const creatureCards = document.querySelectorAll('.creature-card');
+        
+        // Случайная высота для визуального интереса
+        creatureCards.forEach(card => {
+            const randomHeight = Math.random() * 80 + 350;
+            card.style.height = `${randomHeight}px`;
+            
+            // Задержка появления
+            card.style.transitionDelay = `${Math.random() * 300}ms`;
+        });
+        
+        // Эффекты для карточек существ
+        creatureCards.forEach((card, index) => {
+            // 3D эффект при наведении
+            card.addEventListener('mouseenter', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateY = ((x - centerX) / centerX) * 15;
+                const rotateX = ((centerY - y) / centerY) * 15;
+                
+                card.style.transform = `
+                    translateY(-25px) 
+                    scale(1.08) 
+                    rotateX(${rotateX}deg) 
+                    rotateY(${rotateY}deg)
+                `;
+                card.style.boxShadow = `
+                    0 40px 80px rgba(0, 0, 0, 0.7),
+                    0 0 70px rgba(255, 157, 0, 0.5),
+                    0 0 120px rgba(255, 215, 0, 0.3)
+                `;
+                
+                // Показ оверлея с анимацией
                 const overlay = card.querySelector('.creature-overlay');
                 if (overlay) {
                     overlay.style.transform = 'translateY(0)';
                     overlay.style.opacity = '1';
-                }
-                
-                // Показ дополнительной информации
-                const info = card.querySelector('.creature-info');
-                if (info) {
-                    setTimeout(() => {
-                        info.style.maxHeight = '100px';
-                    }, 300);
+                    
+                    // Анимация информации
+                    const info = card.querySelector('.creature-info');
+                    if (info) {
+                        setTimeout(() => {
+                            info.style.maxHeight = '200px';
+                            info.style.opacity = '1';
+                        }, 400);
+                    }
                 }
             });
             
+            card.addEventListener('mousemove', (e) => {
+                const rect = card.getBoundingClientRect();
+                const x = e.clientX - rect.left;
+                const y = e.clientY - rect.top;
+                
+                const centerX = rect.width / 2;
+                const centerY = rect.height / 2;
+                
+                const rotateY = ((x - centerX) / centerX) * 8;
+                const rotateX = ((centerY - y) / centerY) * 8;
+                
+                card.style.transform = `
+                    translateY(-25px) 
+                    scale(1.08) 
+                    rotateX(${rotateX}deg) 
+                    rotateY(${rotateY}deg)
+                `;
+            });
+            
             card.addEventListener('mouseleave', () => {
-                card.style.transform = 'translateY(0) rotateX(0) rotateY(0)';
+                card.style.transform = 'translateY(0) rotateX(0) rotateY(0) scale(1)';
+                card.style.boxShadow = '';
                 
                 // Скрытие оверлея
                 const overlay = card.querySelector('.creature-overlay');
                 if (overlay) {
                     overlay.style.transform = 'translateY(100%)';
                     overlay.style.opacity = '0';
-                }
-                
-                // Скрытие информации
-                const info = card.querySelector('.creature-info');
-                if (info) {
-                    info.style.maxHeight = '0';
+                    
+                    const info = card.querySelector('.creature-info');
+                    if (info) {
+                        info.style.maxHeight = '0';
+                        info.style.opacity = '0';
+                    }
                 }
             });
             
-            // Клик для увеличения
+            // Клик для увеличения (мобильные)
             card.addEventListener('click', () => {
                 if (window.innerWidth <= 768) {
                     card.classList.toggle('expanded');
+                    
+                    if (card.classList.contains('expanded')) {
+                        card.style.zIndex = '1000';
+                        card.style.position = 'fixed';
+                        card.style.top = '50%';
+                        card.style.left = '50%';
+                        card.style.transform = 'translate(-50%, -50%) scale(1.2)';
+                        card.style.width = '90vw';
+                        card.style.height = '80vh';
+                        card.style.boxShadow = '0 0 100px rgba(255, 215, 0, 0.6)';
+                    } else {
+                        card.style.zIndex = '';
+                        card.style.position = '';
+                        card.style.top = '';
+                        card.style.left = '';
+                        card.style.transform = '';
+                        card.style.width = '';
+                        card.style.height = '';
+                        card.style.boxShadow = '';
+                    }
                 }
             });
         });
         
-        // Анимация появления при скролле
+        // Наблюдатель для появления
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
                     entry.target.classList.add('visible');
                     observer.unobserve(entry.target);
+                    
+                    // Эффект при появлении
+                    setTimeout(() => {
+                        entry.target.style.transform = 'translateY(0) scale(1)';
+                        entry.target.style.opacity = '1';
+                    }, index * 100);
                 }
             });
         }, { threshold: 0.1 });
         
         creatureCards.forEach(card => observer.observe(card));
     };
-    
+
+    // ===== ПЕРЕХОДЫ МЕЖДУ СЕКЦИЯМИ =====
+    const initSectionTransitions = () => {
+        const sections = document.querySelectorAll('section');
+        
+        // Создание разделителей между секциями
+        sections.forEach((section, index) => {
+            if (index > 0) {
+                const divider = document.createElement('div');
+                divider.className = 'section-divider';
+                divider.style.cssText = `
+                    position: absolute;
+                    top: -75px;
+                    left: 0;
+                    width: 100%;
+                    height: 150px;
+                    pointer-events: none;
+                    z-index: 1;
+                    overflow: hidden;
+                `;
+                
+                const dividerInner = document.createElement('div');
+                dividerInner.style.cssText = `
+                    position: absolute;
+                    top: 0;
+                    left: 0;
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(transparent, 
+                        rgba(255, 157, 0, 0.1), 
+                        transparent);
+                    clip-path: polygon(0 0, 100% 0, 100% 30%, 0 100%);
+                `;
+                
+                divider.appendChild(dividerInner);
+                section.parentNode.insertBefore(divider, section);
+            }
+        });
+        
+        // Анимация появления секций
+        const sectionObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const sectionId = entry.target.id;
+                    
+                    if (!state.loadedSections.has(sectionId)) {
+                        state.loadedSections.add(sectionId);
+                        
+                        // Добавление класса visible с задержкой
+                        setTimeout(() => {
+                            entry.target.classList.add('visible');
+                            
+                            // Эффект появления
+                            entry.target.style.opacity = '1';
+                            entry.target.style.transform = 'translateY(0)';
+                            
+                            // Свечение при появлении
+                            entry.target.style.boxShadow = 'inset 0 0 100px rgba(255, 157, 0, 0.1)';
+                            setTimeout(() => {
+                                entry.target.style.boxShadow = '';
+                            }, 2000);
+                            
+                        }, 300);
+                    }
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '-100px 0px -100px 0px'
+        });
+        
+        sections.forEach(section => {
+            section.style.opacity = '0';
+            section.style.transform = 'translateY(50px)';
+            section.style.transition = `
+                opacity ${config.sectionTransitionDuration}ms ease,
+                transform ${config.sectionTransitionDuration}ms ease
+            `;
+            sectionObserver.observe(section);
+        });
+    };
+
+    // ===== ПАРАЛЛАКС ЭФФЕКТЫ =====
+    const initParallaxEffects = () => {
+        const parallaxElements = document.querySelectorAll('[data-parallax]');
+        const layers = document.querySelectorAll('.parallax-layer');
+        
+        const handleParallax = () => {
+            const scrolled = window.scrollY;
+            
+            // Элементы с data-parallax
+            parallaxElements.forEach(element => {
+                const speed = parseFloat(element.getAttribute('data-parallax-speed') || 0.5);
+                const yPos = -(scrolled * speed);
+                element.style.transform = `translateY(${yPos}px)`;
+            });
+            
+            // Фоновые слои
+            layers.forEach((layer, index) => {
+                const speed = 0.1 + (index * 0.05);
+                const yPos = -(scrolled * speed);
+                const xPos = Math.sin(scrolled * 0.001 + index) * 20;
+                layer.style.transform = `translate(${xPos}px, ${yPos}px)`;
+            });
+            
+            // Герой-секция
+            const hero = document.querySelector('.hero');
+            if (hero) {
+                const heroSpeed = 0.3;
+                const heroY = -(scrolled * heroSpeed);
+                hero.style.transform = `translateY(${heroY}px)`;
+            }
+        };
+        
+        window.addEventListener('scroll', handleParallax);
+        handleParallax();
+    };
+
+    // ===== ПРОГРЕСС БАР СКРОЛЛА =====
+    const initScrollProgress = () => {
+        // Создание прогресс-бара
+        const progressBar = document.createElement('div');
+        progressBar.className = 'scroll-progress';
+        progressBar.style.cssText = `
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 0%;
+            height: 4px;
+            background: linear-gradient(90deg, 
+                var(--color-gold-1), 
+                var(--color-gold-2), 
+                var(--color-gold-3));
+            z-index: 3000;
+            transition: width 0.1s;
+            box-shadow: 0 0 30px rgba(255, 215, 0, 0.6);
+        `;
+        document.body.appendChild(progressBar);
+        
+        const updateProgress = () => {
+            const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
+            const scrolled = (window.scrollY / windowHeight) * 100;
+            progressBar.style.width = `${scrolled}%`;
+            
+            // Изменение цвета в зависимости от прогресса
+            const hue = 40 + (scrolled * 0.6);
+            progressBar.style.background = `linear-gradient(90deg, 
+                hsl(${hue}, 100%, 50%), 
+                hsl(${hue + 10}, 100%, 60%), 
+                hsl(${hue + 20}, 100%, 70%))`;
+        };
+        
+        return { updateProgress };
+    };
+
+    // ===== ЛЕНИВАЯ ЗАГРУЗКА =====
+    const initLazyLoading = () => {
+        if ('IntersectionObserver' in window) {
+            const imageObserver = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const img = entry.target;
+                        
+                        if (img.dataset.src) {
+                            img.src = img.dataset.src;
+                            img.classList.add('loaded');
+                            
+                            // Эффект загрузки
+                            img.style.opacity = '0';
+                            img.style.transform = 'scale(1.1)';
+                            
+                            setTimeout(() => {
+                                img.style.transition = 'opacity 0.8s ease, transform 0.8s ease';
+                                img.style.opacity = '1';
+                                img.style.transform = 'scale(1)';
+                            }, 100);
+                            
+                            img.removeAttribute('data-src');
+                        }
+                        
+                        imageObserver.unobserve(img);
+                    }
+                });
+            }, {
+                rootMargin: '50px 0px',
+                threshold: 0.1
+            });
+            
+            document.querySelectorAll('img[data-src]').forEach(img => {
+                imageObserver.observe(img);
+                
+                // Placeholder
+                img.style.background = 'linear-gradient(45deg, #111428, #1A1D2B)';
+                img.style.minHeight = '200px';
+            });
+        }
+    };
+
     // ===== АНИМАЦИИ ПРИ СКРОЛЛЕ =====
-    
     const initScrollAnimations = () => {
-        const animatedElements = document.querySelectorAll(
-            '.god-card, .creature-card, .section-title, .myth-item'
-        );
+        const animatedElements = document.querySelectorAll('.animate-on-scroll');
         
         const observer = new IntersectionObserver((entries) => {
             entries.forEach(entry => {
                 if (entry.isIntersecting) {
-                    // Добавление класса для анимации
-                    entry.target.classList.add('animate-in');
+                    const element = entry.target;
                     
-                    // Удаление наблюдения после анимации
+                    // Добавление класса с задержкой
                     setTimeout(() => {
-                        observer.unobserve(entry.target);
-                    }, 1000);
+                        element.classList.add('animated');
+                        
+                        // Дополнительные эффекты
+                        if (element.classList.contains('god-card') || 
+                            element.classList.contains('creature-card')) {
+                            element.style.boxShadow = '0 0 40px rgba(255, 157, 0, 0.3)';
+                            setTimeout(() => {
+                                element.style.boxShadow = '';
+                            }, 1000);
+                        }
+                    }, element.dataset.delay || 0);
+                    
+                    observer.unobserve(element);
                 }
             });
         }, {
@@ -607,158 +1218,145 @@ const MythosApp = (() => {
         
         animatedElements.forEach(el => observer.observe(el));
         
-        // Параллакс для заголовка
+        // Параллакс заголовка героя
         const heroTitle = document.querySelector('.hero h1');
         if (heroTitle) {
             window.addEventListener('scroll', () => {
                 const scrolled = window.pageYOffset;
-                const rate = scrolled * -0.5;
-                heroTitle.style.transform = `translateY(${rate}px)`;
+                const rate = scrolled * -0.3;
+                heroTitle.style.transform = `translateY(${rate}px) perspective(1000px) rotateX(${rate * 0.1}deg)`;
             });
         }
     };
-    
-    // ===== ПАРАЛЛАКС ЭФФЕКТЫ =====
-    
-    const initParallaxEffects = () => {
-        const parallaxElements = document.querySelectorAll('[data-parallax]');
+
+    // ===== ЗАПУСК АНИМАЦИЙ =====
+    const startEnhancedAnimations = () => {
+        // Анимация заголовка
+        const heroTitle = document.querySelector('.hero h1');
+        if (heroTitle) {
+            setTimeout(() => {
+                heroTitle.style.animation = 'heroTitleReveal 1.5s ease-out forwards';
+            }, 500);
+        }
         
-        const handleParallax = () => {
-            const scrolled = window.pageYOffset;
+        // Пульсация кнопки CTA
+        const ctaButton = document.querySelector('.hero .btn');
+        if (ctaButton) {
+            setInterval(() => {
+                ctaButton.classList.toggle('pulse-glow');
+            }, 4000);
             
-            parallaxElements.forEach(element => {
-                const speed = parseFloat(element.getAttribute('data-parallax-speed') || 0.5);
-                const yPos = -(scrolled * speed);
-                element.style.transform = `translateY(${yPos}px)`;
-            });
-            
-            // Параллакс для фоновых элементов
-            const bgElements = document.querySelectorAll('.parallax-layer');
-            bgElements.forEach((layer, index) => {
-                const speed = 0.1 + (index * 0.05);
-                const yPos = -(scrolled * speed);
-                layer.style.transform = `translateY(${yPos}px)`;
-            });
-        };
+            // CSS для пульсации
+            const pulseStyle = document.createElement('style');
+            pulseStyle.textContent = `
+                @keyframes pulseGlow {
+                    0%, 100% { 
+                        box-shadow: 0 10px 40px rgba(255, 157, 0, 0.4);
+                    }
+                    50% { 
+                        box-shadow: 0 20px 60px rgba(255, 215, 0, 0.6);
+                    }
+                }
+                .pulse-glow {
+                    animation: pulseGlow 2s ease infinite;
+                }
+            `;
+            document.head.appendChild(pulseStyle);
+        }
         
-        window.addEventListener('scroll', handleParallax);
-        handleParallax(); // Инициализация
-    };
-    
-    // ===== ЭФФЕКТЫ МЫШИ =====
-    
-    const initMouseEffects = () => {
-        // Трекер позиции мыши
-        document.addEventListener('mousemove', (e) => {
-            state.mousePosition.x = e.clientX;
-            state.mousePosition.y = e.clientY;
-            
-            // Эффект следования за курсором
-            const follower = document.getElementById('cursor-follower');
-            if (follower) {
-                follower.style.left = `${e.clientX}px`;
-                follower.style.top = `${e.clientY}px`;
+        // Случайные вспышки на карточках
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                const cards = document.querySelectorAll('.god-card, .creature-card');
+                if (cards.length > 0) {
+                    const card = cards[Math.floor(Math.random() * cards.length)];
+                    
+                    // Вспышка
+                    card.style.boxShadow = '0 0 80px rgba(255, 240, 179, 0.6)';
+                    card.style.transform = 'translateY(-10px) scale(1.05)';
+                    
+                    setTimeout(() => {
+                        card.style.boxShadow = '';
+                        card.style.transform = '';
+                    }, 800);
+                }
             }
-            
-            // Параллакс для интерактивных элементов
-            const interactiveElements = document.querySelectorAll('.god-card, .creature-card');
-            interactiveElements.forEach(el => {
-                const rect = el.getBoundingClientRect();
-                const centerX = rect.left + rect.width / 2;
-                const centerY = rect.top + rect.height / 2;
-                
-                const distanceX = e.clientX - centerX;
-                const distanceY = e.clientY - centerY;
-                
-                const strength = 0.02;
-                const moveX = distanceX * strength;
-                const moveY = distanceY * strength;
-                
-                el.style.transform = `translate(${moveX}px, ${moveY}px)`;
+        }, 3000);
+        
+        // Анимация логотипа
+        const logo = document.querySelector('.logo');
+        if (logo) {
+            logo.addEventListener('mouseenter', () => {
+                logo.style.animation = 'logoGlow 0.5s ease';
             });
+            
+            logo.addEventListener('animationend', () => {
+                logo.style.animation = '';
+            });
+            
+            // CSS для анимации лого
+            const logoStyle = document.createElement('style');
+            logoStyle.textContent = `
+                @keyframes logoGlow {
+                    0% { 
+                        text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+                    }
+                    50% { 
+                        text-shadow: 0 0 60px rgba(255, 240, 179, 0.9);
+                    }
+                    100% { 
+                        text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+                    }
+                }
+            `;
+            document.head.appendChild(logoStyle);
+        }
+    };
+
+    // ===== АНИМАЦИЯ ПРИ ЗАГРУЗКЕ =====
+    const animateOnLoad = () => {
+        // Последовательное появление элементов
+        const elements = document.querySelectorAll('.hero-content > *');
+        
+        elements.forEach((el, index) => {
+            el.style.opacity = '0';
+            el.style.transform = 'translateY(30px)';
+            
+            setTimeout(() => {
+                el.style.transition = 'opacity 1s ease, transform 1s ease';
+                el.style.opacity = '1';
+                el.style.transform = 'translateY(0)';
+            }, 500 + (index * 300));
         });
         
-        // Создание курсора-следования
-        const createCursorFollower = () => {
-            const follower = document.createElement('div');
-            follower.id = 'cursor-follower';
-            follower.style.cssText = `
-                position: fixed;
-                width: 20px;
-                height: 20px;
-                border: 2px solid rgba(255, 195, 0, 0.5);
-                border-radius: 50%;
-                pointer-events: none;
-                z-index: 9999;
-                transform: translate(-50%, -50%);
-                transition: width 0.2s, height 0.2s, background 0.2s;
-            `;
-            document.body.appendChild(follower);
-            
-            // Изменение курсора при наведении на интерактивные элементы
-            document.querySelectorAll('a, button, .god-card, .creature-card').forEach(el => {
-                el.addEventListener('mouseenter', () => {
-                    follower.style.width = '40px';
-                    follower.style.height = '40px';
-                    follower.style.background = 'rgba(255, 195, 0, 0.1)';
-                });
-                
-                el.addEventListener('mouseleave', () => {
-                    follower.style.width = '20px';
-                    follower.style.height = '20px';
-                    follower.style.background = 'transparent';
-                });
+        // Загрузка остальных секций
+        setTimeout(() => {
+            document.querySelectorAll('section:not(.hero)').forEach((section, index) => {
+                setTimeout(() => {
+                    section.style.opacity = '1';
+                    section.style.transform = 'translateY(0)';
+                }, index * 200);
             });
-        };
-        
-        // Создание только на десктопе
-        if (window.innerWidth > 768) {
-            createCursorFollower();
-        }
+        }, 1500);
     };
-    
-    // ===== ПРОГРЕСС БАР СКРОЛЛА =====
-    
-    const initScrollProgress = () => {
-        // Создание элемента прогресс-бара
-        const progressBar = document.createElement('div');
-        progressBar.className = 'scroll-progress';
-        progressBar.style.cssText = `
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 0%;
-            height: 3px;
-            background: linear-gradient(to right, var(--color-gold-1), var(--color-purple));
-            z-index: 1001;
-            transition: width 0.1s;
-        `;
-        document.body.appendChild(progressBar);
-    };
-    
-    const updateScrollProgress = () => {
-        const progressBar = document.querySelector('.scroll-progress');
-        if (!progressBar) return;
-        
-        const windowHeight = document.documentElement.scrollHeight - window.innerHeight;
-        const scrolled = (window.scrollY / windowHeight) * 100;
-        progressBar.style.width = `${scrolled}%`;
-    };
-    
-    // ===== ВСПОМОГАТЕЛЬНЫЕ ФУНКЦИИ =====
-    
-    // Настройка всех обработчиков событий
+
+    // ===== ОБРАБОТЧИКИ СОБЫТИЙ =====
     const setupEventListeners = () => {
-        // Обработчик скролла с троттлингом
         let ticking = false;
+        
+        // Обработчик скролла с троттлингом
         window.addEventListener('scroll', () => {
             state.scrollPosition = window.scrollY;
             
+            // Определение направления скролла
+            state.scrollDirection = window.scrollY > state.lastScrollY ? 'down' : 'up';
+            state.lastScrollY = window.scrollY;
+            
             if (!ticking) {
-                window.requestAnimationFrame(() => {
+                requestAnimationFrame(() => {
                     // Вызов всех функций, зависящих от скролла
                     if (navigation && navigation.handleScroll) navigation.handleScroll();
-                    if (navigation && navigation.updateActiveNavLink) navigation.updateActiveNavLink();
+                    if (scrollProgress && scrollProgress.updateProgress) scrollProgress.updateProgress();
                     ticking = false;
                 });
                 ticking = true;
@@ -767,15 +1365,18 @@ const MythosApp = (() => {
         
         // Ресайз окна
         window.addEventListener('resize', () => {
-            // Обновление мобильного меню
+            // Переинициализация на мобильных
             if (window.innerWidth > 768 && state.isMobileMenuOpen) {
                 navigation.closeMobileMenu();
             }
             
-            // Переинициализация звезд
+            // Пересоздание звезд
             if (starsBackground && starsBackground.resizeCanvas) {
                 starsBackground.resizeCanvas();
             }
+            
+            // Адаптация эффектов
+            config.mouseTrailEnabled = window.innerWidth > 768;
         });
         
         // Предотвращение контекстного меню на изображениях
@@ -783,83 +1384,112 @@ const MythosApp = (() => {
             img.addEventListener('contextmenu', (e) => e.preventDefault());
         });
         
-        // Ленивая загрузка изображений
-        if ('IntersectionObserver' in window) {
-            const imageObserver = new IntersectionObserver((entries) => {
-                entries.forEach(entry => {
-                    if (entry.isIntersecting) {
-                        const img = entry.target;
-                        const src = img.getAttribute('data-src');
-                        if (src) {
-                            img.src = src;
-                            img.removeAttribute('data-src');
-                        }
-                        imageObserver.unobserve(img);
-                    }
-                });
+        // Эффекты для кнопок
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('mousedown', () => {
+                btn.style.transform = 'scale(0.95)';
             });
             
-            document.querySelectorAll('img[data-src]').forEach(img => {
-                imageObserver.observe(img);
+            btn.addEventListener('mouseup', () => {
+                btn.style.transform = '';
             });
-        }
-        
-        // Анимация при загрузке страницы
-        window.addEventListener('load', () => {
-            document.body.classList.add('loaded');
             
-            // Постепенное появление элементов
-            setTimeout(() => {
-                document.querySelectorAll('.animate-on-load').forEach((el, index) => {
-                    setTimeout(() => {
-                        el.classList.add('animated');
-                    }, index * 100);
-                });
-            }, 500);
+            btn.addEventListener('mouseleave', () => {
+                btn.style.transform = '';
+            });
         });
-    };
-    
-    // Запуск всех анимаций
-    const startAnimations = () => {
-        // Анимация заголовка
-        const heroTitle = document.querySelector('.hero h1');
-        if (heroTitle) {
-            setTimeout(() => {
-                heroTitle.style.animation = 'none';
-                setTimeout(() => {
-                    heroTitle.style.animation = 'fadeInUp 1s forwards';
-                }, 10);
-            }, 100);
-        }
         
-        // Пульсация кнопки
-        const ctaButton = document.querySelector('.hero .btn');
-        if (ctaButton) {
-            setInterval(() => {
-                ctaButton.classList.toggle('pulse');
-            }, 3000);
-        }
+        // Обработка ошибок изображений
+        document.querySelectorAll('img').forEach(img => {
+            img.addEventListener('error', function() {
+                this.style.display = 'none';
+                const fallback = document.createElement('div');
+                fallback.className = 'image-fallback';
+                fallback.style.cssText = `
+                    width: 100%;
+                    height: 100%;
+                    background: linear-gradient(45deg, #111428, #1A1D2B);
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: var(--color-gold-2);
+                    font-size: 2rem;
+                `;
+                fallback.innerHTML = '<i class="fas fa-image"></i>';
+                this.parentNode.insertBefore(fallback, this);
+            });
+        });
         
-        // Случайные эффекты в фоне
-        setInterval(() => {
-            // Случайная вспышка на карточках
-            const randomCard = document.querySelectorAll('.god-card, .creature-card');
-            if (randomCard.length > 0) {
-                const card = randomCard[Math.floor(Math.random() * randomCard.length)];
-                card.classList.add('glow');
-                setTimeout(() => card.classList.remove('glow'), 500);
+        // Обработчик клавиатуры
+        document.addEventListener('keydown', (e) => {
+            // Escape закрывает меню
+            if (e.key === 'Escape' && state.isMobileMenuOpen) {
+                navigation.closeMobileMenu();
             }
-        }, 5000);
+            
+            // Стрелки для навигации
+            if (e.key === 'ArrowDown' || e.key === 'ArrowUp') {
+                e.preventDefault();
+                const sections = Array.from(document.querySelectorAll('section[id]'));
+                const currentIndex = sections.findIndex(section => {
+                    const rect = section.getBoundingClientRect();
+                    return rect.top >= 0 && rect.top < window.innerHeight;
+                });
+                
+                if (currentIndex !== -1) {
+                    let nextIndex;
+                    if (e.key === 'ArrowDown' && currentIndex < sections.length - 1) {
+                        nextIndex = currentIndex + 1;
+                    } else if (e.key === 'ArrowUp' && currentIndex > 0) {
+                        nextIndex = currentIndex - 1;
+                    }
+                    
+                    if (nextIndex !== undefined) {
+                        const targetSection = sections[nextIndex];
+                        const headerHeight = dom.header?.offsetHeight || 0;
+                        window.scrollTo({
+                            top: targetSection.offsetTop - headerHeight,
+                            behavior: 'smooth'
+                        });
+                    }
+                }
+            }
+        });
+        
+        // Обработка касаний для мобильных
+        document.addEventListener('touchstart', (e) => {
+            // Предотвращение масштабирования при двойном тапе
+            if (e.touches.length > 1) {
+                e.preventDefault();
+            }
+        }, { passive: false });
+        
+        // Предотвращение скролла при открытом меню на iOS
+        document.addEventListener('touchmove', (e) => {
+            if (state.isMobileMenuOpen) {
+                e.preventDefault();
+            }
+        }, { passive: false });
     };
-    
+
+    // ===== КЕШИРОВАНИЕ DOM =====
+    const cacheDOM = () => {
+        dom.canvas = document.getElementById('stars-canvas');
+        dom.header = document.getElementById('header');
+        dom.mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        dom.navLinks = document.getElementById('navLinks');
+    };
+
     // Получение ссылок на модули
     let starsBackground;
     let navigation;
+    let scrollProgress;
     
     // Инициализация при загрузке DOM
     document.addEventListener('DOMContentLoaded', () => {
-        starsBackground = initStarsBackground();
+        starsBackground = initEnhancedStars();
         navigation = initNavigation();
+        scrollProgress = initScrollProgress();
         init();
     });
     
@@ -869,7 +1499,7 @@ const MythosApp = (() => {
         getState: () => state,
         getConfig: () => config,
         
-        // Методы для внешнего использования
+        // Методы управления
         openMyth: (index) => {
             const mythItems = document.querySelectorAll('.myth-item');
             if (mythItems[index]) {
@@ -880,7 +1510,7 @@ const MythosApp = (() => {
         scrollToSection: (sectionId) => {
             const section = document.getElementById(sectionId);
             if (section) {
-                const header = document.getElementById('header');
+                const header = dom.header || document.getElementById('header');
                 const offset = header ? header.offsetHeight : 0;
                 window.scrollTo({
                     top: section.offsetTop - offset,
@@ -889,85 +1519,57 @@ const MythosApp = (() => {
             }
         },
         
-        toggleTheme: () => {
-            document.body.classList.toggle('light-theme');
-            localStorage.setItem('mythos-theme', 
-                document.body.classList.contains('light-theme') ? 'light' : 'dark');
+        toggleGlow: (enabled) => {
+            config.maxGlowIntensity = enabled ? 0.8 : 0.3;
+            document.documentElement.style.setProperty(
+                '--glow-intensity', 
+                config.maxGlowIntensity
+            );
         },
         
-        // Аудио эффекты (опционально)
-        playSound: (soundName) => {
-            const sounds = {
-                click: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ'),
-                hover: new Audio('data:audio/wav;base64,UklGRigAAABXQVZFZm10IBIAAAABAAEAQB8AAEAfAAABAAgAZGF0YQ')
-            };
-            
-            if (sounds[soundName]) {
-                sounds[soundName].volume = 0.3;
-                sounds[soundName].play().catch(() => {
-                    // Игнорируем ошибки автовоспроизведения
-                });
-            }
+        // Аудио эффекты
+        playSound: (soundType) => {
+            // Заглушка для звуковых эффектов
+            console.log(`🔊 Playing sound: ${soundType}`);
         }
     };
 })();
 
-// ===== ДОПОЛНИТЕЛЬНЫЕ МОДУЛИ =====
-
-// Модуль для работы с API (если будет нужно)
-const MythosAPI = (() => {
-    const baseURL = 'https://mythos-api.example.com';
-    
-    const fetchGods = async () => {
-        try {
-            // В реальном приложении здесь будет fetch запрос
-            return [
-                { name: 'Zeus', domain: 'God of Sky', description: 'King of Gods' },
-                { name: 'Poseidon', domain: 'God of Sea', description: 'Ruler of Oceans' }
-            ];
-        } catch (error) {
-            console.error('Error fetching gods:', error);
-            return [];
-        }
-    };
-    
-    const fetchMyths = async () => {
-        // Заглушка для будущей реализации
-        return [];
-    };
-    
-    return {
-        fetchGods,
-        fetchMyths
-    };
-})();
-
-// Модуль аналитики
+// ===== АНАЛИТИКА И ТРЕКИНГ =====
 const MythosAnalytics = (() => {
     const trackEvent = (eventName, data = {}) => {
-        // В реальном приложении здесь будет отправка в Google Analytics и т.д.
         console.log(`📊 Track: ${eventName}`, data);
         
-        // Сохранение в localStorage для простой аналитики
-        const events = JSON.parse(localStorage.getItem('mythos_events') || '[]');
-        events.push({
-            event: eventName,
-            data,
-            timestamp: new Date().toISOString()
-        });
-        localStorage.setItem('mythos_events', JSON.stringify(events));
+        // Сохранение в localStorage
+        try {
+            const events = JSON.parse(localStorage.getItem('mythos_events') || '[]');
+            events.push({
+                event: eventName,
+                data,
+                timestamp: new Date().toISOString(),
+                path: window.location.pathname
+            });
+            localStorage.setItem('mythos_events', JSON.stringify(events.slice(-100)));
+        } catch (e) {
+            console.error('Error saving analytics:', e);
+        }
     };
     
     const trackPageView = (pageName) => {
-        trackEvent('page_view', { page: pageName });
+        trackEvent('page_view', { 
+            page: pageName,
+            referrer: document.referrer,
+            screen: `${window.innerWidth}x${window.innerHeight}`
+        });
     };
     
-    const trackInteraction = (element, action) => {
+    const trackInteraction = (element, action, details = {}) => {
         trackEvent('interaction', {
             element: element.tagName,
             id: element.id,
-            class: element.className,
-            action
+            className: element.className,
+            action,
+            ...details
         });
     };
     
@@ -980,121 +1582,411 @@ const MythosAnalytics = (() => {
 
 // ===== ГЛОБАЛЬНЫЕ ОБРАБОТЧИКИ =====
 
-// Аналитика кликов
+// Трекинг кликов
 document.addEventListener('click', (e) => {
     const target = e.target;
     
-    // Трекинг кликов по навигации
+    // Навигация
     if (target.matches('.nav-links a, .btn')) {
-        MythosAnalytics.trackInteraction(target, 'click');
+        MythosAnalytics.trackInteraction(target, 'click', {
+            text: target.textContent.trim(),
+            href: target.getAttribute('href')
+        });
     }
     
-    // Трекинг кликов по карточкам
+    // Карточки
     if (target.closest('.god-card, .creature-card')) {
         const card = target.closest('.god-card, .creature-card');
-        const name = card.querySelector('h3')?.textContent || 'Unknown';
-        MythosAnalytics.trackEvent('card_click', { name });
+        const name = card.querySelector('h3')?.textContent?.trim() || 'Unknown';
+        MythosAnalytics.trackEvent('card_click', { 
+            name,
+            type: card.classList.contains('god-card') ? 'god' : 'creature'
+        });
+    }
+    
+    // Аккордеон
+    if (target.closest('.myth-header')) {
+        const mythItem = target.closest('.myth-item');
+        const title = mythItem.querySelector('.myth-title')?.textContent?.trim() || 'Unknown';
+        MythosAnalytics.trackEvent('myth_toggle', { 
+            title,
+            action: mythItem.classList.contains('active') ? 'close' : 'open'
+        });
     }
 });
 
-// Трекинг скролла секций
+// Трекинг просмотров секций
 const sectionObserver = new IntersectionObserver((entries) => {
     entries.forEach(entry => {
         if (entry.isIntersecting) {
             const sectionName = entry.target.id || 'unknown';
             MythosAnalytics.trackPageView(sectionName);
+            
+            // Отмечаем как просмотренную
+            entry.target.dataset.viewed = 'true';
         }
     });
-}, { threshold: 0.5 });
+}, { threshold: 0.5, rootMargin: '-50px 0px -50px 0px' });
 
-// Наблюдение за секциями
 document.querySelectorAll('section[id]').forEach(section => {
     sectionObserver.observe(section);
 });
 
-// ===== РЕГИСТРАЦИЯ SERVICE WORKER (PWA) =====
+// Трекинг времени на сайте
+let timeOnSite = 0;
+setInterval(() => {
+    timeOnSite += 1;
+    
+    // Каждые 30 секунд отправляем обновление
+    if (timeOnSite % 30 === 0) {
+        MythosAnalytics.trackEvent('time_update', {
+            seconds: timeOnSite,
+            minutes: Math.floor(timeOnSite / 60)
+        });
+    }
+}, 1000);
+
+// При закрытии вкладки
+window.addEventListener('beforeunload', () => {
+    MythosAnalytics.trackEvent('session_end', {
+        totalTime: timeOnSite,
+        sectionsViewed: document.querySelectorAll('section[data-viewed="true"]').length
+    });
+});
+
+// ===== PWA SUPPORT =====
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('/sw.js').then(registration => {
             console.log('✅ ServiceWorker registered:', registration.scope);
+            
+            // Отслеживание обновлений
+            registration.addEventListener('updatefound', () => {
+                const newWorker = registration.installing;
+                console.log('🔄 ServiceWorker update found');
+                
+                newWorker.addEventListener('statechange', () => {
+                    if (newWorker.state === 'installed' && navigator.serviceWorker.controller) {
+                        console.log('🆕 New content available, please refresh');
+                    }
+                });
+            });
         }).catch(error => {
             console.log('❌ ServiceWorker registration failed:', error);
         });
     });
 }
 
-// ===== ОБРАБОТЧИКИ ОШИБОК =====
+// Проверка обновлений каждые 24 часа
+setInterval(() => {
+    if ('serviceWorker' in navigator) {
+        navigator.serviceWorker.getRegistration().then(registration => {
+            if (registration) {
+                registration.update();
+            }
+        });
+    }
+}, 24 * 60 * 60 * 1000);
+
+// ===== ОБРАБОТКА ОШИБОК =====
 window.addEventListener('error', (e) => {
     console.error('❌ JavaScript Error:', e.message, e.filename, e.lineno);
+    
     MythosAnalytics.trackEvent('js_error', {
         message: e.message,
         file: e.filename,
-        line: e.lineno
+        line: e.lineno,
+        col: e.colno,
+        error: e.error?.toString()
+    });
+    
+    // Предотвращение показа ошибки пользователю
+    e.preventDefault();
+});
+
+window.addEventListener('unhandledrejection', (e) => {
+    console.error('❌ Unhandled Promise Rejection:', e.reason);
+    
+    MythosAnalytics.trackEvent('promise_rejection', {
+        reason: e.reason?.toString()
+    });
+});
+
+// ===== OFFLINE SUPPORT =====
+window.addEventListener('online', () => {
+    document.body.classList.remove('offline');
+    console.log('🌐 Online');
+});
+
+window.addEventListener('offline', () => {
+    document.body.classList.add('offline');
+    console.log('📴 Offline');
+    
+    // Показать офлайн уведомление
+    const offlineNotification = document.createElement('div');
+    offlineNotification.className = 'offline-notification';
+    offlineNotification.textContent = 'You are offline. Some features may be limited.';
+    offlineNotification.style.cssText = `
+        position: fixed;
+        top: 20px;
+        right: 20px;
+        background: rgba(255, 157, 0, 0.9);
+        color: white;
+        padding: 15px 25px;
+        border-radius: 10px;
+        z-index: 9999;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+    `;
+    
+    document.body.appendChild(offlineNotification);
+    
+    setTimeout(() => {
+        if (offlineNotification.parentNode) {
+            offlineNotification.parentNode.removeChild(offlineNotification);
+        }
+    }, 5000);
+});
+
+// ===== PERFORMANCE MONITORING =====
+const perfObserver = new PerformanceObserver((list) => {
+    list.getEntries().forEach(entry => {
+        if (entry.entryType === 'paint') {
+            MythosAnalytics.trackEvent('performance_paint', {
+                name: entry.name,
+                startTime: Math.round(entry.startTime),
+                duration: Math.round(entry.duration)
+            });
+        }
+        
+        if (entry.entryType === 'largest-contentful-paint') {
+            MythosAnalytics.trackEvent('performance_lcp', {
+                element: entry.element?.tagName || 'unknown',
+                url: entry.element?.src || entry.element?.href || 'none',
+                size: entry.size,
+                time: Math.round(entry.startTime),
+                loadTime: Math.round(entry.loadTime || 0)
+            });
+        }
+    });
+});
+
+try {
+    perfObserver.observe({ entryTypes: ['paint', 'largest-contentful-paint'] });
+} catch (e) {
+    console.log('Performance Observer not supported');
+}
+
+// ===== PRELOADING =====
+// Предзагрузка критических ресурсов
+const preloadCriticalResources = () => {
+    const criticalImages = [
+        'images/zeus.jpg',
+        'images/hera.jpg',
+        'images/poseidon.jpg'
+    ];
+    
+    criticalImages.forEach(src => {
+        const link = document.createElement('link');
+        link.rel = 'preload';
+        link.as = 'image';
+        link.href = src;
+        link.crossOrigin = 'anonymous';
+        document.head.appendChild(link);
+    });
+};
+
+// ===== INSTALL PROMPT =====
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => {
+    e.preventDefault();
+    deferredPrompt = e;
+    
+    // Показать кнопку установки
+    const installButton = document.createElement('button');
+    installButton.className = 'install-prompt';
+    installButton.innerHTML = '📱 Install MYTHOS';
+    installButton.style.cssText = `
+        position: fixed;
+        bottom: 20px;
+        right: 20px;
+        background: linear-gradient(135deg, var(--color-gold-1), var(--color-gold-2));
+        color: var(--color-bg);
+        border: none;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: bold;
+        cursor: pointer;
+        z-index: 9999;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.3);
+        display: none;
+    `;
+    
+    document.body.appendChild(installButton);
+    
+    // Показать через 5 секунд
+    setTimeout(() => {
+        installButton.style.display = 'block';
+    }, 5000);
+    
+    installButton.addEventListener('click', async () => {
+        installButton.style.display = 'none';
+        
+        if (deferredPrompt) {
+            deferredPrompt.prompt();
+            const { outcome } = await deferredPrompt.userChoice;
+            
+            MythosAnalytics.trackEvent('install_prompt', {
+                outcome: outcome
+            });
+            
+            deferredPrompt = null;
+        }
     });
 });
 
 // ===== ЭКСПОРТ ГЛОБАЛЬНЫХ МЕТОДОВ =====
 window.Mythos = {
     app: MythosApp,
-    api: MythosAPI,
-    analytics: MythosAnalytics
+    analytics: MythosAnalytics,
+    
+    // Утилиты
+    utils: {
+        formatDate: (date) => new Date(date).toLocaleDateString('ru-RU', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric'
+        }),
+        
+        debounce: (func, wait) => {
+            let timeout;
+            return function executedFunction(...args) {
+                const later = () => {
+                    clearTimeout(timeout);
+                    func(...args);
+                };
+                clearTimeout(timeout);
+                timeout = setTimeout(later, wait);
+            };
+        },
+        
+        throttle: (func, limit) => {
+            let inThrottle;
+            return function() {
+                const args = arguments;
+                const context = this;
+                if (!inThrottle) {
+                    func.apply(context, args);
+                    inThrottle = true;
+                    setTimeout(() => inThrottle = false, limit);
+                }
+            };
+        }
+    }
 };
 
-// Автоматическая инициализация при загрузке
-if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', MythosApp.init);
-} else {
-    MythosApp.init();
-}
-
-// ===== ДОПОЛНИТЕЛЬНЫЕ CSS-АНИМАЦИИ ДЛЯ JS =====
-// Эти стили будут добавлены динамически
+// ===== ДОПОЛНИТЕЛЬНЫЕ CSS ДЛЯ JS =====
 const dynamicStyles = `
-    @keyframes pulse {
-        0% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 195, 0, 0.4); }
-        70% { transform: scale(1.05); box-shadow: 0 0 0 10px rgba(255, 195, 0, 0); }
-        100% { transform: scale(1); box-shadow: 0 0 0 0 rgba(255, 195, 0, 0); }
+    /* Анимации для JS */
+    @keyframes ripple {
+        0% {
+            transform: scale(0);
+            opacity: 1;
+        }
+        100% {
+            transform: scale(4);
+            opacity: 0;
+        }
     }
     
-    .pulse {
-        animation: pulse 2s infinite;
+    @keyframes floatParticle {
+        0% {
+            transform: translate(0, 0) scale(1);
+            opacity: 0.3;
+        }
+        100% {
+            transform: translate(var(--tx, 50px), var(--ty, 50px)) scale(var(--scale, 0.8));
+            opacity: 0.1;
+        }
     }
     
-    .glow {
-        animation: glow 0.5s ease-out;
+    @keyframes heroTitleReveal {
+        from {
+            opacity: 0;
+            transform: translateY(80px) scale(0.9);
+            filter: blur(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0) scale(1);
+            filter: blur(0);
+        }
     }
     
-    @keyframes glow {
-        0% { box-shadow: 0 0 5px rgba(255, 195, 0, 0.2); }
-        50% { box-shadow: 0 0 20px rgba(255, 195, 0, 0.5); }
-        100% { box-shadow: 0 0 5px rgba(255, 195, 0, 0.2); }
+    @keyframes logoGlow {
+        0%, 100% { 
+            text-shadow: 0 0 20px rgba(255, 215, 0, 0.6);
+        }
+        50% { 
+            text-shadow: 0 0 60px rgba(255, 240, 179, 0.9);
+        }
     }
     
-    .animate-in {
-        animation: fadeInUp 0.8s ease-out forwards;
+    @keyframes pulseGlow {
+        0%, 100% { 
+            box-shadow: 0 10px 40px rgba(255, 157, 0, 0.4);
+        }
+        50% { 
+            box-shadow: 0 20px 60px rgba(255, 215, 0, 0.6);
+        }
     }
     
-    .light-theme {
-        --color-bg: #F0F0F0;
-        --color-dark: #E0E0E0;
-        --color-text: #333333;
+    /* Классы для анимаций */
+    .pulse-glow {
+        animation: pulseGlow 2s ease infinite;
     }
     
-    /* Адаптация для мобильных */
+    .image-loaded {
+        opacity: 1 !important;
+        transform: scale(1) !important;
+        transition: opacity 0.8s ease, transform 0.8s ease;
+    }
+    
+    .offline {
+        filter: grayscale(0.5) brightness(0.8);
+    }
+    
+    /* Мобильные стили */
     @media (max-width: 768px) {
-        .god-card.expanded {
-            height: auto !important;
-            z-index: 1000;
+        .god-card.expanded,
+        .creature-card.expanded {
+            position: fixed !important;
+            top: 50% !important;
+            left: 50% !important;
+            transform: translate(-50%, -50%) scale(1.1) !important;
+            width: 90vw !important;
+            height: 80vh !important;
+            z-index: 9999 !important;
+            box-shadow: 0 0 100px rgba(255, 215, 0, 0.7) !important;
         }
         
-        .creature-card.expanded {
-            position: fixed;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%) !important;
-            width: 90vw;
-            height: 70vh;
-            z-index: 1000;
+        .god-card.expanded .god-content,
+        .creature-card.expanded .creature-overlay {
+            opacity: 1 !important;
+            transform: none !important;
+        }
+    }
+    
+    /* Тема для печати */
+    @media print {
+        .no-print {
+            display: none !important;
+        }
+        
+        .god-card,
+        .creature-card {
+            break-inside: avoid;
+            box-shadow: none !important;
+            border: 1px solid #ddd !important;
         }
     }
 `;
@@ -1104,39 +1996,36 @@ const styleSheet = document.createElement('style');
 styleSheet.textContent = dynamicStyles;
 document.head.appendChild(styleSheet);
 
-// ===== ПОЛЬЗОВАТЕЛЬСКИЕ СОБЫТИЯ =====
-// Создание кастомных событий для расширяемости
-const MythosEvents = {
-    GOD_CARD_HOVER: 'mythos:godcard:hover',
-    MYTH_OPENED: 'mythos:myth:opened',
-    SECTION_CHANGED: 'mythos:section:changed'
-};
+// ===== ИНИЦИАЛИЗАЦИЯ ПРИ ЗАГРУЗКЕ =====
+if (document.readyState === 'loading') {
+    document.addEventListener('DOMContentLoaded', MythosApp.init);
+} else {
+    MythosApp.init();
+}
 
-// Диспетчер событий
-const EventBus = {
-    events: {},
-    
-    on(event, callback) {
-        if (!this.events[event]) this.events[event] = [];
-        this.events[event].push(callback);
-    },
-    
-    emit(event, data) {
-        if (this.events[event]) {
-            this.events[event].forEach(callback => callback(data));
-        }
+// ===== ДОПОЛНИТЕЛЬНЫЕ ФУНКЦИИ =====
+
+// Автоматическое обновление года в футере
+const updateCopyrightYear = () => {
+    const yearElement = document.querySelector('.copyright');
+    if (yearElement) {
+        const currentYear = new Date().getFullYear();
+        yearElement.innerHTML = yearElement.innerHTML.replace(/© \d{4}/, `© ${currentYear}`);
     }
 };
 
-// Экспорт событий
-window.MythosEvents = MythosEvents;
-window.EventBus = EventBus;
+// Обновление при загрузке
+updateCopyrightYear();
 
-// ===== ФИНАЛЬНАЯ ИНИЦИАЛИЗАЦИЯ =====
+// Регулярное обновление (на случай, если страница открыта долго)
+setInterval(updateCopyrightYear, 60 * 60 * 1000);
+
+// ===== FINAL LOG =====
 console.log(`
 ╔══════════════════════════════════════════╗
-║            MYTHOS v1.0.0                ║
-║    Древнегреческая мифология            ║
-║    © 2023 Все права защищены            ║
+║         MYTHOS Enhanced v2.0            ║
+║    Максимальные эффекты свечения        ║
+║    Плавные переходы и анимации          ║
+║    © ${new Date().getFullYear()} Все права защищены          ║
 ╚══════════════════════════════════════════╝
 `);
