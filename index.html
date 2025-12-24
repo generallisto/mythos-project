@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Древняя Греция: Боги и Мифы</title>
+    <title>MYTHOS | Мир древнегреческих богов</title>
     <meta name="description" content="Погружение в мир древнегреческих богов и мифов. Интерактивный пантеон, легенды и существа.">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -1129,6 +1129,31 @@
             opacity: 1;
             transform: translateY(0);
         }
+        
+        /* ===== LOADING STATES ===== */
+        .loading {
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .loading::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, 
+                transparent, 
+                rgba(255, 215, 0, 0.1), 
+                transparent);
+            animation: loading 1.5s infinite;
+        }
+        
+        @keyframes loading {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
     </style>
 </head>
 <body>
@@ -1140,7 +1165,7 @@
     <!-- Header & Navigation -->
     <header id="header">
         <div class="container nav-container">
-            <a href="#" class="logo">OLYMPUS</a>
+            <a href="#" class="logo">MYTHOS</a>
             <button class="mobile-menu-btn" id="mobileMenuBtn">
                 <i class="fas fa-bars"></i>
             </button>
@@ -1157,9 +1182,9 @@
     <!-- Hero Section -->
     <section class="hero" id="home">
         <div class="hero-content container">
-            <h1>ДРЕВНЯЯ ГРЕЦИЯ:<br><span class="bold-gold">БОГИ И ЛЕГЕНДЫ</span></h1>
-            <p>"Не страшно пасть под ударами судьбы, страшно пасть без славы."<br> — <span class="bold-gold">Гомер, Илиада</span></p>
-            <a href="#pantheon" class="btn">Войти в Пантеон</a>
+            <h1>МИР <span class="bold-gold">ДРЕВНЕГРЕЧЕСКИХ</span><br><span class="bold-white">БОГОВ И ЛЕГЕНД</span></h1>
+            <p>"Величие не в том, чтобы никогда не падать, а в том, чтобы подниматься каждый раз, когда падаешь."<br> — <span class="bold-gold">Конфуций</span></p>
+            <a href="#pantheon" class="btn">НАЧАТЬ ПУТЕШЕСТВИЕ</a>
         </div>
         <a href="#pantheon" class="scroll-indicator">
             <i class="fas fa-chevron-down"></i>
@@ -1170,8 +1195,8 @@
     <section class="pantheon section-transition" id="pantheon">
         <div class="container">
             <div class="section-title">
-                <h2>ОЛИМПИЙСКИЙ ПАНТЕОН</h2>
-                <p>Верховные божества, правящие миром с вершины горы Олимп</p>
+                <h2>ВЕЛИКИЙ ПАНТЕОН</h2>
+                <p>Олимпийские боги, правящие миром с вершин горы Олимп</p>
             </div>
             <div class="gods-grid">
                 <!-- Zeus Card -->
@@ -1185,13 +1210,13 @@
                     </div>
                     <div class="god-content">
                         <h3><span class="bold-gold">ЗЕВС</span></h3>
-                        <span class="god-domain">ВЕРХОВНЫЙ БОГ</span>
-                        <p class="god-description">Царь богов, повелитель неба, грома и молний. Олицетворяет власть, закон и порядок. Его решения определяют судьбы богов и смертных. Сын Кроноса и Реи, освободивший своих братьев и сестер из чрева отца.</p>
+                        <span class="god-domain">БОГ НЕБА И ГРОМА</span>
+                        <p class="god-description">Царь богов, правитель Олимпа, повелитель неба, грома и молний. Символ власти, закона и порядка.</p>
                         <div class="god-symbols">
-                            <span>⚡ МОЛНИЯ</span>
-                            <span>🦅 ОРЁЛ</span>
-                            <span>🌳 ДУБ</span>
-                            <span>👑 СКИПЕТР</span>
+                            <span>МОЛНИЯ</span>
+                            <span>ОРЁЛ</span>
+                            <span>ДУБ</span>
+                            <span>СКИПЕТР</span>
                         </div>
                     </div>
                 </div>
@@ -1207,12 +1232,12 @@
                     <div class="god-content">
                         <h3><span class="bold-gold">ГЕРА</span></h3>
                         <span class="god-domain">БОГИНЯ БРАКА</span>
-                        <p class="god-description">Царица богов, покровительница брака, женщин и семьи. Известна своей ревностью к любовницам Зевса. Защитница замужних женщин и хранительница святости брачных уз. Сестра и жена Зевса.</p>
+                        <p class="god-description">Царица богов, покровительница брака, женщин и семьи. Известна своей ревностью и гордостью.</p>
                         <div class="god-symbols">
-                            <span>🦚 ПАВЛИН</span>
-                            <span>🍎 ГРАНАТ</span>
-                            <span>👑 ДИАДЕМА</span>
-                            <span>🌸 ЛОТОС</span>
+                            <span>ПАВЛИН</span>
+                            <span>ГРАНАТ</span>
+                            <span>ДИАДЕМА</span>
+                            <span>ЛОТОС</span>
                         </div>
                     </div>
                 </div>
@@ -1227,13 +1252,13 @@
                     </div>
                     <div class="god-content">
                         <h3><span class="bold-gold">ПОСЕЙДОН</span></h3>
-                        <span class="god-domain">ПОВЕЛИТЕЛЬ МОРЕЙ</span>
-                        <p class="god-description">Бог морей, океанов, землетрясений и лошадей. Олицетворяет необузданную мощь стихии, грозные шторма и разрушительные цунами. Его гнев вызывает землетрясения, а милость — спокойное море.</p>
+                        <span class="god-domain">БОГ МОРЕЙ</span>
+                        <p class="god-description">Повелитель морей, землетрясений и лошадей. Изображается с трезубцем, которым вызывает бури.</p>
                         <div class="god-symbols">
-                            <span>🔱 ТРЕЗУБЕЦ</span>
-                            <span>🐎 КОНЬ</span>
-                            <span>🐬 ДЕЛЬФИН</span>
-                            <span>🌊 ВОЛНА</span>
+                            <span>ТРЕЗУБЕЦ</span>
+                            <span>КОНЬ</span>
+                            <span>ДЕЛЬФИН</span>
+                            <span>ВОЛНА</span>
                         </div>
                     </div>
                 </div>
@@ -1249,12 +1274,12 @@
                     <div class="god-content">
                         <h3><span class="bold-gold">АФИНА</span></h3>
                         <span class="god-domain">БОГИНЯ МУДРОСТИ</span>
-                        <p class="god-description">Богиня мудрости, справедливой войны, ремесел и знаний. Родилась из головы Зевса в полном боевом облачении. Покровительница Афин, героев и стратегов. Символ разума, тактики и созидания.</p>
+                        <p class="god-description">Богиня мудрости, справедливой войны, ремесел и знаний. Покровительница Афин и героев.</p>
                         <div class="god-symbols">
-                            <span>🦉 СОВА</span>
-                            <span>🫒 ОЛИВА</span>
-                            <span>🛡️ ЩИТ</span>
-                            <span>🗡️ КОПЬЁ</span>
+                            <span>СОВА</span>
+                            <span>ОЛИВА</span>
+                            <span>ЩИТ</span>
+                            <span>КОПЬЁ</span>
                         </div>
                     </div>
                 </div>
@@ -1269,13 +1294,13 @@
                     </div>
                     <div class="god-content">
                         <h3><span class="bold-gold">АПОЛЛОН</span></h3>
-                        <span class="god-domain">БОГ СОЛНЦА И ИСКУССТВ</span>
-                        <p class="god-description">Бог солнца, света, музыки, поэзии, пророчеств и врачевания. Покровитель муз и искусств. Его стрелы несут как исцеление, так и чуму. Предводитель муз и владыка Дельфийского оракула.</p>
+                        <span class="god-domain">БОГ СОЛНЦА</span>
+                        <p class="god-description">Бог солнца, света, музыки, поэзии и пророчеств. Покровитель искусств и стрельбы из лука.</p>
                         <div class="god-symbols">
-                            <span>🎵 ЛИРА</span>
-                            <span>🏹 ЛУК</span>
-                            <span>☀️ СОЛНЦЕ</span>
-                            <span>🌿 ЛАВР</span>
+                            <span>ЛИРА</span>
+                            <span>ЛУК</span>
+                            <span>СОЛНЦЕ</span>
+                            <span>ЛАВР</span>
                         </div>
                     </div>
                 </div>
@@ -1290,407 +1315,7 @@
                     </div>
                     <div class="god-content">
                         <h3><span class="bold-gold">АРТЕМИДА</span></h3>
-                        <span class="god-domain">БОГИНЯ ОХОТЫ И ЛУНЫ</span>
-                        <p class="god-description">Богиня охоты, дикой природы, луны и целомудрия. Покровительница женщин, детей и диких животных. Неутомимая охотница, вечно юная дева, защитница природы от человеческого варварства.</p>
+                        <span class="god-domain">БОГИНЯ ОХОТЫ</span>
+                        <p class="god-description">Богиня охоты, дикой природы, луны и целомудрия. Покровительница женщин и животных.</p>
                         <div class="god-symbols">
-                            <span>🏹 ЛУК</span>
-                            <span>🦌 ЛАНЬ</span>
-                            <span>🌙 ЛУНА</span>
-                            <span>🌲 КИПАРИС</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Ares Card -->
-                <div class="god-card">
-                    <div class="god-icon">
-                        <i class="fas fa-shield-alt"></i>
-                    </div>
-                    <div class="image-container">
-                        <img src="images/ares.jpg" alt="Арес" class="god-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-shield-alt\"></i></div>';">
-                    </div>
-                    <div class="god-content">
-                        <h3><span class="bold-gold">АРЕС</span></h3>
-                        <span class="god-domain">БОГ ВОЙНЫ</span>
-                        <p class="god-description">Бог кровопролитной войны, насилия и разрушения. Олицетворяет не благородную войну стратегии (как Афина), а ярость битвы, хаос и жестокость. Его спутники — Фобос (Страх) и Деймос (Ужас).</p>
-                        <div class="god-symbols">
-                            <span>⚔️ МЕЧ</span>
-                            <span>🛡️ ЩИТ</span>
-                            <span>🔥 ФАКЕЛ</span>
-                            <span>🐕 СОБАКА</span>
-                        </div>
-                    </div>
-                </div>
-                <!-- Aphrodite Card -->
-                <div class="god-card">
-                    <div class="god-icon">
-                        <i class="fas fa-heart"></i>
-                    </div>
-                    <div class="image-container">
-                        <img src="images/aphrodite.jpg" alt="Афродита" class="god-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-heart\"></i></div>';">
-                    </div>
-                    <div class="god-content">
-                        <h3><span class="bold-gold">АФРОДИТА</span></h3>
-                        <span class="god-domain">БОГИНЯ ЛЮБВИ И КРАСОТЫ</span>
-                        <p class="god-description">Богиня любви, красоты, страсти и плодородия. Родилась из морской пены после оскопления Урана. Её чары подчиняют и богов, и смертных. Мать Эрота (Купидона) и супруга хромого Гефеста.</p>
-                        <div class="god-symbols">
-                            <span>💘 СЕРДЦЕ</span>
-                            <span>🌹 РОЗА</span>
-                            <span>🐚 РАКОВИНА</span>
-                            <span>🕊️ ГОЛУБЬ</span>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Myths Section -->
-    <section class="myths section-transition" id="myths">
-        <div class="container">
-            <div class="section-title">
-                <h2>ВЕЛИКИЕ МИФЫ</h2>
-                <p>Легенды, формировавшие мировоззрение древних греков</p>
-            </div>
-            <div class="myths-accordion">
-                <!-- Myth 1 -->
-                <div class="myth-item active">
-                    <div class="myth-header">
-                        <h3 class="myth-title"><span class="bold-gold">ТИТАНОМАХИЯ</span> - ВОЙНА БОГОВ И ТИТАНОВ</h3>
-                        <i class="fas fa-plus myth-icon"></i>
-                    </div>
-                    <div class="myth-content">
-                        <p class="myth-text">
-                            Десятилетняя война между <span class="bold-gold">богами-олимпийцами</span> во главе с Зевсом и <span class="bold-white">титанами</span> во главе с Кроносом, которая определила судьбу космоса. Битва потрясла основы мира: горы рушились под ударами титанов, моря кипели от пламени молний Зевса. Олимпийцы освободили из Тартара циклопов, которые выковали Зевсу молнии, Посейдону — трезубец, а Аиду — шлем-невидимку. Последним сражением стала битва на горе Отрис, где Зевс низверг титанов в бездну Тартара, установив новый миропорядок и вознесясь на трон верховного бога. Стогекторные гекатонхейры стали вечными стражами Тартара.
-                        </p>
-                        <div class="myth-meta">
-                            <div class="myth-era">
-                                <i class="fas fa-hourglass-half"></i>
-                                <span>ДОЧЕЛОВЕЧЕСКАЯ ЭРА</span>
-                            </div>
-                            <div class="myth-location">
-                                <i class="fas fa-mountain"></i>
-                                <span>ОЛИМП vs ТАРТАР</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Myth 2 -->
-                <div class="myth-item">
-                    <div class="myth-header">
-                        <h3 class="myth-title"><span class="bold-gold">ПОДВИГИ ГЕРАКЛА</span> - 12 НЕВЫПОЛНИМЫХ ЗАДАЧ</h3>
-                        <i class="fas fa-plus myth-icon"></i>
-                    </div>
-                    <div class="myth-content">
-                        <p class="myth-text">
-                            В наказание за убийство своей семьи в припадке безумия, насланного Герой, <span class="bold-gold">Геракл</span> (сын Зевса и смертной Алкмены) должен был совершить двенадцать подвигов для микенского царя Эврисфея. От укрощения Немейского льва с непробиваемой шкурой до похищения золотых яблок Гесперид, охраняемых стогекторным драконом Ладоном — каждый подвиг был смертельным испытанием. Когда Геракл победил Лернейскую гидру, чьи отрубленные головы вырастали вновь, Гера послала гигантского рака на помощь чудовищу, но герой раздавил и его. Эти испытания не только искупили его вину, но и вознесли его на Олимп, где он получил бессмертие и руку богини вечной юности Гебы.
-                        </p>
-                        <div class="myth-meta">
-                            <div class="myth-era">
-                                <i class="fas fa-hourglass-half"></i>
-                                <span>ГЕРОИЧЕСКИЙ ВЕК</span>
-                            </div>
-                            <div class="myth-location">
-                                <i class="fas fa-globe-europe"></i>
-                                <span>ВСЯ ИЗВЕСТНАЯ ЭЛЛАДА</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                <!-- Myth 3 -->
-                <div class="myth-item">
-                    <div class="myth-header">
-                        <h3 class="myth-title"><span class="bold-gold">ПУТЕШЕСТВИЕ ОДИССЕЯ</span> - 10 ЛЕТ СКИТАНИЙ</h3>
-                        <i class="fas fa-plus myth-icon"></i>
-                    </div>
-                    <div class="myth-content">
-                        <p class="myth-text">
-                            После падения Трои, <span class="bold-gold">Одиссей</span>, царь Итаки, десять лет пытался вернуться домой, навлекая на себя гнев Посейдона, чьего сына циклопа Полифема он ослепил. Его путь лежал через земли лотофагов (пожирателей лотоса, дарующего забвение), остров циклопов, где он перехитрил Полифема, назвав себя "Никто", плавучий остров Эола (бога ветров), землю лестригонов-людоедов, остров волшебницы Кирки, царство мертвых, где он говорил с тенью прорицателя Тиресия, мимо сирен, чьи песни сводят с ума моряков, между Сциллой (шестиголовым чудовищем) и Харибдой (водоворотом), и семь лет в плену у нимфы Калипсо. Эти испытания проверяли не только его силу, но и хитрость, которая в итоге привела его к верной Пенелопе и родному дому.
-                        </p>
-                        <div class="myth-meta">
-                            <div class="myth-era">
-                                <i class="fas fa-hourglass-half"></i>
-                                <span>ПОСЛЕ ТРОЯНСКОЙ ВОЙНЫ</span>
-                            </div>
-                            <div class="myth-location">
-                                <i class="fas fa-ship"></i>
-                                <span>СРЕДИЗЕМНОЕ МОРЕ</span>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Gallery Section -->
-    <section class="gallery section-transition" id="gallery">
-        <div class="container">
-            <div class="section-title">
-                <h2>МИФИЧЕСКИЕ СУЩЕСТВА</h2>
-                <p>Чудовища, гибриды и волшебные создания древних легенд</p>
-            </div>
-            <div class="creatures-grid">
-                <!-- Creature 1 -->
-                <div class="creature-card">
-                    <div class="creature-image-container">
-                        <img src="images/minotaur.jpg" alt="Минотавр" class="creature-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-skull-crossbones\"></i></div>';">
-                    </div>
-                    <div class="creature-overlay">
-                        <h3 class="creature-name">МИНОТАВР</h3>
-                        <p class="creature-type">ЧЕЛОВЕК-БЫК</p>
-                        <div class="creature-info">
-                            Чудовище с телом человека и головой быка, рожденное от связи царицы Пасифаи и священного быка Посейдона. Обитало в Лабиринте на Крите, построенном Дедалом для царя Миноса. Пожирал афинских юношей и девушек, посылаемых в качестве дани. Побежден афинским героем Тесеем с помощью Ариадны (дочери Миноса), давшей ему клубок ниток для выхода из Лабиринта.
-                        </div>
-                    </div>
-                </div>
-                <!-- Creature 2 -->
-                <div class="creature-card">
-                    <div class="creature-image-container">
-                        <img src="images/phoenix.jpg" alt="Феникс" class="creature-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-fire\"></i></div>';">
-                    </div>
-                    <div class="creature-overlay">
-                        <h3 class="creature-name">ФЕНИКС</h3>
-                        <p class="creature-type">БЕССМЕРТНАЯ ПТИЦА</p>
-                        <div class="creature-info">
-                            Волшебная птица с огненно-золотым оперением, живущая 500 лет. В конце жизни строит гнездо из корицы и мирры, поджигает себя и возрождается из собственного пепла. Символ вечного обновления, бессмертия и цикличности времени. Связан с культом солнца Гелиоса. По некоторым версиям, слезы феникса обладают целительной силой, а пепел может воскрешать мертвых.
-                        </div>
-                    </div>
-                </div>
-                <!-- Creature 3 -->
-                <div class="creature-card">
-                    <div class="creature-image-container">
-                        <img src="images/cerberus.jpg" alt="Цербер" class="creature-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-dog\"></i></div>';">
-                    </div>
-                    <div class="creature-overlay">
-                        <h3 class="creature-name">ЦЕРБЕР</h3>
-                        <p class="creature-type">СТРАЖ АИДА</p>
-                        <div class="creature-info">
-                            Трёхголовый (иногда пятидесятиголовый) пёс со змеиным хвостом, гривой из ядовитых змей и когтями льва. Охраняет вход в подземное царство Аида, не позволяя живым проникать в царство мертвых, а мертвым — покидать его. Рожден от Тифона и Ехидны. Был усыплен Орфеем игрой на лире, усмирен Гераклом в рамках двенадцатого подвига и побежден Сивиллой, давшей ему медовую лепешку со снотворным.
-                        </div>
-                    </div>
-                </div>
-                <!-- Creature 4 -->
-                <div class="creature-card">
-                    <div class="creature-image-container">
-                        <img src="images/pegasus.jpg" alt="Пегас" class="creature-image"
-                             onerror="this.onerror=null; this.style.display='none'; this.parentElement.innerHTML='<div class=\"image-placeholder\"><i class=\"fas fa-horse\"></i></div>';">
-                    </div>
-                    <div class="creature-overlay">
-                        <h3 class="creature-name">ПЕГАС</h3>
-                        <p class="creature-type">КРЫЛАТЫЙ КОНЬ</p>
-                        <div class="creature-info">
-                            Божественный крылатый конь, родившийся из крови Медузы Горгоны, когда Персей отрубил ей голову. Символ поэтического вдохновения, свободы и полета мысли. Ударом копыта создал источник Гиппокрена на горе Геликон, вода которого дарила вдохновение поэтам. Был укрощен Беллерофонтом с помощью золотой уздечки, подаренной Афиной. Вместе они победили Химеру, но когда Беллерофонт попытался взлететь на Олимп, Зевс послал овода, ужалившего Пегаса, и герой упал на землю.
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-
-    <!-- Footer -->
-    <footer id="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-logo">ДРЕВНЯЯ ГРЕЦИЯ</div>
-                <p class="footer-quote">"Мифы — это не ложь, а метафоры, скрывающие глубокие истины о природе человека и вселенной. В них живут наши страхи, надежды и вопросы о смысле бытия."</p>
-                <div class="copyright">
-                    <p>© 2023 Древняя Греция: Боги и Мифы | Все права защищены. Проект создан для образовательных и культурных целей.</p>
-                    <p>Создано с помощью <span class="credits">DeepSeek</span> & <span class="credits">generallisto</span></p>
-                </div>
-            </div>
-        </div>
-    </footer>
-
-    <!-- JavaScript -->
-    <script>
-        // Stars Background with Canvas
-        const canvas = document.getElementById('stars-canvas');
-        const ctx = canvas.getContext('2d');
-        let stars = [];
-        let animationId;
-        
-        function resizeCanvas() {
-            canvas.width = window.innerWidth;
-            canvas.height = window.innerHeight;
-            createStars();
-        }
-        
-        function createStars() {
-            stars = [];
-            const starCount = Math.min(300, Math.floor(window.innerWidth * window.innerHeight / 1500));
-            
-            for (let i = 0; i < starCount; i++) {
-                stars.push({
-                    x: Math.random() * canvas.width,
-                    y: Math.random() * canvas.height,
-                    radius: Math.random() * 2 + 0.5,
-                    speed: Math.random() * 0.4 + 0.1,
-                    opacity: Math.random() * 0.8 + 0.2,
-                    twinkleSpeed: Math.random() * 0.06 + 0.01,
-                    twinkleDirection: Math.random() > 0.5 ? 1 : -1,
-                    parallaxFactor: Math.random() * 0.7 + 0.3
-                });
-            }
-        }
-        
-        function drawStars() {
-            ctx.clearRect(0, 0, canvas.width, canvas.height);
-            
-            stars.forEach(star => {
-                star.opacity += star.twinkleSpeed * star.twinkleDirection;
-                if (star.opacity > 1 || star.opacity < 0.2) {
-                    star.twinkleDirection *= -1;
-                }
-                
-                const gradient = ctx.createRadialGradient(
-                    star.x, star.y, 0,
-                    star.x, star.y, star.radius * 4
-                );
-                gradient.addColorStop(0, `rgba(255, 255, 255, ${star.opacity})`);
-                gradient.addColorStop(0.3, `rgba(255, 255, 255, ${star.opacity * 0.7})`);
-                gradient.addColorStop(1, 'transparent');
-                
-                ctx.beginPath();
-                ctx.arc(star.x, star.y, star.radius, 0, Math.PI * 2);
-                ctx.fillStyle = gradient;
-                ctx.fill();
-                
-                if (star.radius > 1.2) {
-                    ctx.save();
-                    ctx.translate(star.x, star.y);
-                    for (let i = 0; i < 6; i++) {
-                        ctx.rotate(Math.PI / 3);
-                        ctx.beginPath();
-                        ctx.moveTo(star.radius * 2, 0);
-                        ctx.lineTo(star.radius * 3.5, 0);
-                        ctx.strokeStyle = `rgba(255, 255, 255, ${star.opacity * 0.4})`;
-                        ctx.lineWidth = 1.5;
-                        ctx.stroke();
-                    }
-                    ctx.restore();
-                }
-                
-                star.y += star.speed;
-                if (star.y > canvas.height) {
-                    star.y = 0;
-                    star.x = Math.random() * canvas.width;
-                }
-            });
-            
-            animationId = requestAnimationFrame(drawStars);
-        }
-        
-        // Header scroll effect
-        const header = document.getElementById('header');
-        window.addEventListener('scroll', () => {
-            if (window.scrollY > 50) {
-                header.classList.add('scrolled');
-            } else {
-                header.classList.remove('scrolled');
-            }
-            
-            // Reveal sections on scroll
-            revealSections();
-            revealCards();
-        });
-        
-        // Mobile menu toggle
-        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
-        const navLinks = document.getElementById('navLinks');
-        
-        mobileMenuBtn.addEventListener('click', () => {
-            navLinks.classList.toggle('active');
-            mobileMenuBtn.innerHTML = navLinks.classList.contains('active') 
-                ? '<i class="fas fa-times"></i>' 
-                : '<i class="fas fa-bars"></i>';
-        });
-        
-        // Close mobile menu when clicking a link
-        document.querySelectorAll('.nav-links a').forEach(link => {
-            link.addEventListener('click', () => {
-                navLinks.classList.remove('active');
-                mobileMenuBtn.innerHTML = '<i class="fas fa-bars"></i>';
-            });
-        });
-        
-        // Myths accordion functionality
-        const mythHeaders = document.querySelectorAll('.myth-header');
-        
-        mythHeaders.forEach(header => {
-            header.addEventListener('click', () => {
-                const mythItem = header.parentElement;
-                const isActive = mythItem.classList.contains('active');
-                
-                document.querySelectorAll('.myth-item').forEach(item => {
-                    item.classList.remove('active');
-                });
-                
-                if (!isActive) {
-                    mythItem.classList.add('active');
-                }
-            });
-        });
-        
-        // Reveal sections on scroll
-        function revealSections() {
-            const sections = document.querySelectorAll('.section-transition');
-            const windowHeight = window.innerHeight;
-            
-            sections.forEach(section => {
-                const sectionTop = section.getBoundingClientRect().top;
-                
-                if (sectionTop < windowHeight - 100) {
-                    section.classList.add('visible');
-                }
-            });
-        }
-        
-        // Reveal cards on scroll
-        function revealCards() {
-            const cards = document.querySelectorAll('.god-card, .creature-card');
-            const windowHeight = window.innerHeight;
-            
-            cards.forEach(card => {
-                const cardTop = card.getBoundingClientRect().top;
-                
-                if (cardTop < windowHeight - 150) {
-                    card.classList.add('visible');
-                }
-            });
-        }
-        
-        // Smooth scroll for anchor links
-        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
-            anchor.addEventListener('click', function(e) {
-                e.preventDefault();
-                
-                const targetId = this.getAttribute('href');
-                if (targetId === '#') return;
-                
-                const targetElement = document.querySelector(targetId);
-                if (targetElement) {
-                    window.scrollTo({
-                        top: targetElement.offsetTop - 80,
-                        behavior: 'smooth'
-                    });
-                }
-            });
-        });
-        
-        // Initialize everything
-        window.addEventListener('load', () => {
-            resizeCanvas();
-            drawStars();
-            revealSections();
-            revealCards();
-        });
-        
-        window.addEventListener('resize', resizeCanvas);
-    </script>
-</body>
-</html>
+                            <span>
